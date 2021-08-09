@@ -1,0 +1,30 @@
+import jenkins
+import re
+import sys
+import datetime
+from github import Github
+
+g = Github("26c01e24d48609683ce0d980615d9c5e22da72dd")
+
+server = jenkins.Jenkins('https://jenkins.shub.us', username='jenkins_pub', password='AW_.AMucEE2QLmvFLpDi')
+#version = server.get_version()
+#print('Hello %s from Jenkins %s' % (user['fullName'], version))
+
+#last_build_number = server.get_job_info('apk-beep-Fat')['lastCompletedBuild']['number']
+#print(last_build_number)
+#build_info = server.get_build_info('apk-beep-Fat', last_build_number)
+#print(build_info)
+#build_num = server.get_job_info('apk-beep-Fat')['lastSuccessfulBuild']['number']
+#print(build_num)
+p_name = sys.argv[1]
+#apk_name = "StoreHub_Fat_1.12.0.apk"
+branch = sys.argv[2]
+bucket = sys.argv[3]
+print(branch)
+#attr = ".apk"
+#time_stamp = datetime.datetime.now().strftime('%Y%m%d%H%M')
+#apk_name = project_name + '_' + version + '_' + branch + '_' + time_stamp + attr
+repo = g.get_repo(sys.argv[4])
+data = repo.get_branch(branch).raw_data
+commit_info = data['commit']['commit']['message']
+server.build_job('upload_pgy', {'apk_newname': p_name, 'bucket': bucket, 'branch': branch, 'commit_info': commit_info})
