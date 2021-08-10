@@ -37,7 +37,7 @@ def  send_message(recipient, text, PAGE_ACCESS_TOKEN):
         return r.json()
 
 
-jira = JIRA('https://storehub.atlassian.net', basic_auth=("matrix.wang@storehub.com", "Bv1bhVqMW7p2DuT45vhP2A99"))
+jira = JIRA('https://storehub.atlassian.net', basic_auth=(name, password)
 
 # Get all projects viewable by anonymous users.
 projects = jira.projects()
@@ -116,7 +116,7 @@ if repo == "storehubnet/pos-v3-mobile":
         features_failed = "{} features failed".format(features_failed_number)
 
 has_version = ''
-g = Github("26c01e24d48609683ce0d980615d9c5e22da72dd")
+g = Github("token")
 rep = g.get_repo(repo)
 pr_num = int(GIT_BRANCH.split('-')[1])
 pr = rep.get_pull(pr_num)

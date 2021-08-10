@@ -96,7 +96,7 @@ def get_error(repo):
 
 
 if __name__ == '__main__':
-    jira = JIRA('https://storehub.atlassian.net', basic_auth=("congyu.li@storehub.com", "bHvvtsw6LZ8LLgwfmS5V64FE"))
+    jira = JIRA('https://storehub.atlassian.net', basic_auth=(name, password)
 
     # Get all projects viewable by anonymous users.
     projects = jira.projects()
@@ -123,7 +123,7 @@ if __name__ == '__main__':
     recipient = sys.argv[12]
     PAGE_ACCESS_TOKEN = 'DQVJ1RFhaWUxaNlRyZAHQ0bVZAKYzlPMUxZAY1ZAHNzROamxzN2FnYW9EMk9OWkFYYnZAtdlRzazZARbndqMzZAYWjljTGQxWHp6WHU0OEVfckV1RkdBcEdieFNILVhlbDJYZAUtqQWY2UTBCaGxGc182YS1saWdvTVoyd3h6SmFla0xCYU5yV3ZA6VTdPVkQ4a2RmNGxkWjFtUTN4Si1tRnBZANzF2N05mdXRLN2I3Mk1XOGVGb3N5cUdYaDFtSjVGdjRFV20wVWhSTzJB'
     jira_site = 'https://storehub.atlassian.net/browse'
-    g = Github("b62038c258e1905eab0431ae082a6f32cfd25a83")
+    g = Github("token")
     rep = g.get_repo(repo)
     pr_num = int(GIT_BRANCH.split('-')[1])
     pr = rep.get_pull(pr_num)

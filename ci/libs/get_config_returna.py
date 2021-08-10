@@ -50,7 +50,7 @@ if __name__ == "__main__":
     url = 'http://apollo-fat.shub.us'
     namespace = 'application'
     category = 'properties'
-    jira = JIRA('https://storehub.atlassian.net', basic_auth=("congyu.li@storehub.com", "bHvvtsw6LZ8LLgwfmS5V64FE"))
+    jira = JIRA('https://storehub.atlassian.net', basic_auth=(name, password)
     pr_num = int(sys.argv[5].split('-')[1])
     #print(issue)
     issue = "BEEP-832"

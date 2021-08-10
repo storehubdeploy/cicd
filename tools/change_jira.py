@@ -7,7 +7,7 @@ import re
 # By default, the client will connect to a Jira instance started from the Atlassian Plugin SDK
 # (see https://developer.atlassian.com/display/DOCS/Installing+the+Atlassian+Plugin+SDK for details).
 # Override this with the options parameter.
-jira = JIRA('https://storehub.atlassian.net', basic_auth=("nick.huang@storehub.com", "MEf01OqNi2iBV7r22tFE9EC7"))
+jira = JIRA('https://storehub.atlassian.net', basic_auth=(name, password)
 
 # Get all projects viewable by anonymous users.
 projects = jira.projects()

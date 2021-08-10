@@ -27,7 +27,7 @@ if __name__ == '__main__':
     recipient = sys.argv[12]
 
     jira_site = 'https://storehub.atlassian.net/browse'
-    g = Github("b62038c258e1905eab0431ae082a6f32cfd25a83")
+    g = Github("token")
     rep = g.get_repo(repo)
     pr_num = int(GIT_BRANCH.split('-')[1])
     pr = rep.get_pull(pr_num)

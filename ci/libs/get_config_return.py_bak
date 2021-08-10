@@ -20,8 +20,8 @@ if __name__ == "__main__":
     url = 'http://apollo-fat.shub.us'
     namespace = 'application'
     category = 'properties'
-    jira = JIRA('https://storehub.atlassian.net', basic_auth=("matrix.wang@storehub.com", "Bv1bhVqMW7p2DuT45vhP2A99"))
-    g = Github("26c01e24d48609683ce0d980615d9c5e22da72dd")
+    jira = JIRA('https://storehub.atlassian.net', basic_auth=(name, password)
+    g = Github("token")
     repo = g.get_repo(sys.argv[4])
     pr_num = int(sys.argv[5].split('-')[1])
     pr = repo.get_pull(pr_num)

@@ -4,7 +4,7 @@ import sys
 import datetime
 from github import Github
 
-g = Github("b62038c258e1905eab0431ae082a6f32cfd25a83")
+g = Github("token")
 
 server = jenkins.Jenkins('https://jenkins.shub.us', username='jenkins_pub', password='AW_.AMucEE2QLmvFLpDi')
 
