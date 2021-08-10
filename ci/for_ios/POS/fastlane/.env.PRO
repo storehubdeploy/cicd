@@ -1,0 +1,4 @@
+configuration=Release
+export_method=app-store
+HOCKEYAPP_APP_NAME=iOS_POS_PRO
+HOCKEYAPP_API_TOKEN=caca1a7a49049d7589bdf97274891501df3bae4f

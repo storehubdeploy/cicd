@@ -1,0 +1,112 @@
+#########################################################################################################
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# Author  : mingdez
+# Dtae    : 201902
+# Step 1  : Copy Schema to POS/v1/trunk/POS.xcworkspace/xcshareddata
+# Step 2  : fastlane ENV
+
+def print_color(option)
+#   30:黑                don't like it
+#   31:红    for stderr
+#   32:绿                don't like it
+#   33:棕                don't like it
+#   34:蓝    for stdout
+#   35:紫红  for title
+#   36:青                just so so
+#   37:灰                can't see it
+    puts "\033[" + option[:color] + "m" + option[:text] + "\033[0m"
+end
+
+default_platform(:ios)
+
+# Global Parameter
+      $project = "POS"
+       $scheme = "StoreHub"
+    $workspace = "#{$project}" + ".xcworkspace"
+ $current_path = File.expand_path("..")
+ $archive_path = "#{$current_path}" + "/xcrunBuild/" + "#{$scheme}" + ".xcarchive"
+  $output_path = "#{$current_path}" + "/xcrunBuild"
+
+lane :package do |option|
+    if not option[:manual]
+        # Auto increse build number
+        increment_build_number
+        version_number = get_version_number(xcodeproj: "#{$project}" + ".xcodeproj")
+        build_number = get_build_number(xcodeproj: "#{$project}" + ".xcodeproj")
+    else
+        # Manual Control build number
+        increment_version_number(
+            version_number: option[:version]
+        )
+        increment_build_number(
+            build_number: option[:build]
+        )
+        version_number=option[:version]
+        build_number=option[:build]
+    end
+    ipaName = "#{$scheme}" + Time.new.strftime('%Y-%m-%d_%H:%M') + ".ipa"
+    print_color(color:"31",text:">>> Version :" + version_number)
+    print_color(color:"31",text:">>> Build   :" + build_number)
+    print_color(color:"31",text:">>> ipaName :" + ipaName)
+    # Package
+    # xcargs: 'DEPLOYMENT_POSTPROCESSING="YES"
+    print_color(color:"31",text:">>> Archive")
+    if ENV['configuration'] == "Release"
+        get_certificates
+        get_provisioning_profile
+        gym(
+                scheme: "#{$scheme}",
+         configuration: ENV['configuration'],
+         export_method: ENV['export_method'],
+             workspace: "#{$workspace}",
+                 clean: true,
+                silent: true,
+          archive_path: "#{$archive_path}", 
+         export_xcargs: "-allowProvisioningUpdates",
+        export_options: {provisioningProfiles: {
+          "com.StoreHub.StoreHub" => "Xcode Managed Profile"}},
+      output_directory: "#{$output_path}",
+           output_name: ipaName,
+         buildlog_path: "#{$output_path}" + "/buildLog",
+ suppress_xcode_output: true)
+    else
+        gym(
+                scheme: "#{$scheme}",
+         configuration: ENV['configuration'],
+         export_method: ENV['export_method'],
+             workspace: "#{$workspace}",
+                 clean: true,
+                silent: true,
+          archive_path: "#{$archive_path}",
+      output_directory: "#{$output_path}",
+           output_name: ipaName,
+       include_symbols: false,
+       include_bitcode: false,
+         buildlog_path: "#{$output_path}" + "/buildLog",
+ suppress_xcode_output: true)
+    end
+    print_color(color:"31",text:">>> Upload to App center")
+            appcenter_upload(
+                  owner_name: "congyu-li-801r",
+                    app_name: ENV['HOCKEYAPP_APP_NAME'],
+                   api_token: ENV['HOCKEYAPP_API_TOKEN'],            
+                         ipa: "#{$output_path}" + "/" + ipaName,
+            )
+    if ENV['export_method'] == "app-store"
+        print_color(color:"31",text:">>> Submit to Apple Store")
+        deliver(
+            ipa: "#{$output_path}" + "/" + ipaName,
+            app_version: version_number,
+            submit_for_review: false,
+            phased_release: true,
+            automatic_release: false,
+            force: true,
+            metadata_path:"./fastlane/metadata",
+            skip_screenshots: true,
+            skip_metadata: false
+        )
+    end
+end
