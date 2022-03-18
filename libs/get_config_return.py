@@ -50,8 +50,8 @@ if __name__ == "__main__":
     url = 'http://apollo-fat.shub.us'
     namespace = 'application'
     category = 'properties'
-    jira = JIRA('https://storehub.atlassian.net', basic_auth=(name, password)
-    g = Github("token")
+    jira = JIRA('https://storehub.atlassian.net', basic_auth=("", ""))
+    g = Github("")
     repo = g.get_repo(sys.argv[4])
     pr_num = int(sys.argv[5].split('-')[1])
     pr = repo.get_pull(pr_num)
@@ -64,8 +64,8 @@ if __name__ == "__main__":
         print(config)
     else:
         url1 = 'https://storehub.atlassian.net/rest/api/3/issue/{}'.format(issue)
-        r = requests.get(url1, auth=('nick.huang@storehub.com', ''))
-        #print(r.json())
+        r = requests.get(url1, auth=('', ''))
+        print(r.json())
         if r.json()['fields']['fixVersions']:
             version = r.json()['fields']['fixVersions'][0]['name']
         else:

@@ -8,16 +8,20 @@
 import os, sys, json
 import requests
 from optparse import OptionParser
+
 sys.path.append("/data/ops/ci/libs")
 from common import print_color
 import re
 from github import Github
 from jira import JIRA
 
+
 def get_config(category, conf, version):
     if category == 'properties':
         release_dict = {}
-        r = requests.get("{0}/configfiles/json/{1}/{2}/{3}".format(url, appid, cluster, namespace))
+        r = requests.get(
+            "{0}/configfiles/json/{1}/{2}/{3}".format(url, appid, cluster, namespace)
+        )
         if r.status_code == 200:
             release_dict = {k: v for k, v in r.json().items()}
         else:
@@ -42,7 +46,6 @@ def get_config(category, conf, version):
             return release_dict['report_url']
 
 
-
 if __name__ == "__main__":
     appid = sys.argv[1]
     cluster = sys.argv[2]
@@ -50,13 +53,16 @@ if __name__ == "__main__":
     url = 'http://apollo-fat.shub.us'
     namespace = 'application'
     category = 'properties'
-    jira = JIRA('https://storehub.atlassian.net', basic_auth=(name, password)
-    g = Github("token")
+    jira = JIRA(
+        'https://storehub.atlassian.net',
+        basic_auth=("", ""),
+    )
+    g = Github("")
     repo = g.get_repo(sys.argv[4])
     pr_num = int(sys.argv[5].split('-')[1])
     pr = repo.get_pull(pr_num)
     issue = pr.head.ref
-    #print(issue)
+    # print(issue)
     version = None
     config = ''
     if issue.startswith("release"):
@@ -64,8 +70,10 @@ if __name__ == "__main__":
         print(config)
     else:
         url1 = 'https://storehub.atlassian.net/rest/api/3/issue/{}'.format(issue)
-        r = requests.get(url1, auth=('nick.huang@storehub.com', ''))
-        #print(r.json())
+        r = requests.get(
+            url1, auth=('', '')
+        )
+        # print(r.json())
         if r.json()['fields']['fixVersions']:
             version = r.json()['fields']['fixVersions'][0]['name']
         else:

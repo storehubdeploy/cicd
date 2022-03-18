@@ -13,15 +13,15 @@ from jira import JIRA
 import ci_constants as CONSTANTS
 from utils import *
 
-# TODO: it's not same structure as beep android
+
 def get_apk_info(file):
     if not os.path.exists(file):
         print("The file does not exist: " + file)
         return '-', '-'
     with open(file, 'r') as f:
         j = json.load(f)
-        version_number = j[0]['apkData']['versionName']
-        versionCode = str(j[0]['apkData']['versionCode'])
+        version_number = j['elements'][0]['versionName']
+        versionCode = str(j['elements'][0]['versionCode'])
         if os.path.exists(file):
             os.remove(file)
         return version_number, versionCode
@@ -49,7 +49,7 @@ if __name__ == '__main__':
     issue_branch = pr.head.ref
 
     version_get = None
-    file = "/data/share/android__package/apk-rnpos-fat/output.json"
+    file = "/data/share/android__package/apk-beep-fat/output-metadata.json"
     version_number, versionCode = get_apk_info(file)
 
     features_failed = ''
@@ -92,4 +92,3 @@ if __name__ == '__main__':
         )
         recipient = recipient if recipient != 'None' else recipient_default
         send_message(recipient, text)
-

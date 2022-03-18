@@ -1,72 +1,35 @@
-# This script shows how to use the client in anonymous mode
-# against jira.atlassian.com.
+# /usr/bin/python3.6
+# -*- coding: utf-8 -*-
+
 import sys
 from jira import JIRA
-import re
+import ci_constants as CONSTANTS
 
-# By default, the client will connect to a Jira instance started from the Atlassian Plugin SDK
-# (see https://developer.atlassian.com/display/DOCS/Installing+the+Atlassian+Plugin+SDK for details).
-# Override this with the options parameter.
-jira = JIRA('https://storehub.atlassian.net', basic_auth=(name, password)
+jira = JIRA(
+    'https://storehub.atlassian.net',
+    basic_auth=CONSTANTS.AUTH,
+)
 
-# Get all projects viewable by anonymous users.
-projects = jira.projects()
-print(projects)
+if __name__ == '__main__':
+    get_issue = sys.argv[1]
+    comments = sys.argv[2]
+    label = sys.argv[3]
 
-# Sort available project keys, then return the second, third, and fourth keys.
-keys = sorted([project.key for project in projects])[2:5]
-print(keys)
-# Get an issue.
-get_issue = sys.argv[1]
-comments = sys.argv[2]
-label1 = sys.argv[3]
-print(get_issue)
-if get_issue.startswith("release"):
-    print('No ticket')
-else:
-    issue = jira.issue(get_issue)
-    transitions = jira.transitions(issue)
-    t = [(t['id'], t['name']) for t in transitions]
-    print(t)
-    jira.add_comment(issue, comments)
-    issue.update(fields={"labels": [label1]})    
-#trans = sys.argv[2]
-#print(trans)
-#user_id = sys.argv[3]
-#print(user_id)
-#jira.transition_issue(issue, trans, assignee={'id': user_id})
-#print(issue.fields.status)
+    if get_issue.startswith("release"):
+        print('No ticket')
+    else:
+        # Get an issue.
+        issue = jira.issue(get_issue)
+        old_list = []
+        if issue.fields.labels != None:
+            old_list = issue.fields.labels
+            if 'Not_ready' in old_list:
+                old_list.remove('Not_ready')
+            if 'Ready_For_Test' in old_list:
+                old_list.remove('Ready_For_Test')
+            if label in old_list:
+                old_list.remove(label)
 
-
-# Find all comments made by Atlassians on this issue.
-#atl_comments = [
-#    comment
-#    for comment in issue.fields.comment.comments
-#    if re.search(r"", comment.author.emailAddress)
-#]
-#print(atl_comments)
-# Add a comment to the issue.
-
-# Change the issue's summary and description.
-#issue.update(
-#    summary="I'm different!", description="Changed the summary to be different."
-#)
-
-# Change the issue without sending updates
-#issue.update(notify=False, description="Quiet summary update.")
-
-# You can update the entire labels field like this
-#label2 = sys.argv[6]
-
-# Or modify the List of existing labels. The new label is unicode with no
-# spaces
-#issue.fields.labels.append(u"new_text")
-#issue.update(fields={"labels": issue.fields.labels})
-
-# Send the issue away for good.
-#issue.delete()
-
-# Linking a remote jira issue (needs applinks to be configured to work)
-#issue = jira.issue("JRA-1330")
-#issue2 = jira.issue("XX-23")  # could also be another instance
-#jira.add_remote_link(issue, issue2)
+        old_list.append(label)
+        jira.add_comment(issue, comments)
+        issue.update(fields={"labels": old_list})

@@ -1,0 +1,7 @@
+src/output.txt
+
+**/__pycache__
+.vscode/.ropeproject
+.vscode/
+token.pickle
+**/*.env
