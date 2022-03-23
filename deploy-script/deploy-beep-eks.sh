@@ -52,7 +52,7 @@ docker_part() {
     echo "${DOCKER_PSW}" | docker login ${DOCKER_REG} -u ${DOCKER_USR} --password-stdin 2>/dev/null || die ">>> Login Harbor Failed"
     blue ">>> Docker build"
     if [ $app = "beep-v1-web" ] || [ $app = "ist-v1-web" ];then
-        /data/ops/ci/libs/get_config.py --env ${env} --appid ${app} --cluster ${cluster}
+        python3 /cicd/ci/libs/get_config.py --env ${env} --appid ${app} --cluster ${cluster}
     fi
     docker build -t ${DOCKER_REG}/${env}/${app}:${git_tag} . || die ">>> Docker Build Failed"
     rm -f ${WORKSPACE}/.env
