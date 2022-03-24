@@ -9,7 +9,8 @@ pipeline {
 
       }
       steps {
-        sh '''cd /root
+        sh '''sudo su -
+        cd /root
 git clone https://github.com/storehubdeploy/cicd.git'''
       }
     }
