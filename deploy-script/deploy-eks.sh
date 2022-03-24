@@ -87,6 +87,14 @@ helm_push() {
     helm push ${app}*.tgz ${env} || die ">>> Helm Push Failed"
 }
 
+helm_backup() {
+    blue ">>> Backup Current Version"
+    ssh root@192.167.0.125 <<EOF
+    date "+%y%m%d%H%M%S"
+    helm list -n test16 | awk '{if(NR>1)print \$1, \$9}' > /data/backup/`date "+%y_%m_%d_%H_%M_%S"`.txt
+EOF
+} 
+
 helm_deploy() {
     blue ">>> Helm Deploy"
 #helm repo add --username=${HELM_USR} --password=${HELM_PSW} ${env} ${HELM_REPO}/${env}
@@ -127,6 +135,7 @@ fi
 helm_repo
 helm_pack
 helm_push
+helm_backup
 helm_deploy
 }
 
