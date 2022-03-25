@@ -1,5 +1,5 @@
 #!/bin/bash
-
+#nicktest
 # Load
 script_path=`readlink -f $(dirname $0)`
 . ${script_path}/libsqa/common.inc
