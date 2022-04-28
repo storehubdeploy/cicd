@@ -45,20 +45,21 @@ class Automation(object):
         cluster = "default"
         namespace = "application"
 
-        r = requests.get("{0}/configfiles/json/{1}/{2}/{3}".format(url,appid,cluster,namespace))
+        r = requests.get("{0}/configfiles/json/{1}/{2}/{3}".format(url, appid, cluster, namespace))
         if r.status_code == 200:
-            for k,v in r.json().items():
+            for k, v in r.json().items():
                 if k == "PHASE_RELEASE_GROUP":
                     return v
                 else:
-                    print("\n>>> Can not get workplace 'PHASE_RELEASE_GROUP'. <<<")
+                    print("\n>>> Can not get workplace 'PHASE_RELEASE_GROUP'. ")
+
 
     def firefoxDriver(self):
         driver_path = "/Users/shbuild/jenkins/workspace/mobile/Android/RN-POS_Phase_Release_Automation/geckodriver"
 
         # init
         options = webdriver.FirefoxOptions()
-        # options.add_argument("-headless") # Windowless mode
+        options.add_argument("-headless") # Windowless mode
         options.set_preference('browser.link.open_newwindow', '3')
         options.set_preference('permissions.default.image', 2)  # no pictures mode
 
@@ -71,19 +72,19 @@ class Automation(object):
         # Open website
         driver = webdriver.Firefox(executable_path=driver_path, options=options, firefox_profile=profile, desired_capabilities=desired)
 
-        print("\n>>> Creating firefox driver success. <<<")
+        print("\n>>> Creating firefox driver success.")
         return driver
 
 
     def firebaseAuto(self):
-        print("\n>>> Opening firebash website. <<<")
+        print("\n>>> Opening firebash website. ")
         self.driver.get(self.url)
 
         # waiting for loading complete
         self.wait.until(ec.presence_of_element_located(('css selector', 'button.mat-menu-trigger:nth-child(1)')))
 
 
-        print("\n>>> Firebase : Starting operation. <<<")
+        print("\n>>> Firebase : Starting operation. ")
         self.driver.find_element('css selector', 'button.mat-menu-trigger:nth-child(1)').click()
         self.driver.find_element('css selector', '.increase-distribution-button').click()
 
@@ -103,7 +104,7 @@ class Automation(object):
         # waiting for operating before
         self.wait.until_not(ec.presence_of_element_located(('css selector', '.send-button')))
 
-        print('\n>>> Firebase "Increase distribution" have been updated. <<< \n>>> And now, Increase distribution = {}%. <<<\n', nownu)
+        print('\n>>> Firebase "Increase distribution" have been updated.  \n>>> And now, Increase distribution = {}%. \n'.format(nownu))
         text = '''
         Change {}: Firebase "Increase distribution" have been updated.\nIncrease distribution = {}%.
         '''.format(index+1, nownu)
@@ -118,7 +119,7 @@ class Automation(object):
             self.driver.quit()
 
     def jenkinsAuto(self):
-        print("\n>>> Opening jenkins website. <<<")
+        print("\n>>> Opening jenkins website. ")
         self.driver.get('https://jenkins.shub.us/job/mobile/job/Android/job/RN-POS_Phase_Release_Automation/configure')
 
         # start opration
@@ -145,12 +146,12 @@ class Automation(object):
             '''
             self.send_message(text)
 
-            print("\n>>> Auto-run mode started. It will run automatically according to the rule of [1%,2%,5%,10%,20%,50%,100%]. <<<")
+            print("\n>>> Auto-run mode started. It will run automatically according to the rule of [1%,2%,5%,10%,20%,50%,100%]. ")
         elif terminate == "true":
             text = "Auto-run mode stopped, because of manual termination."
             self.send_message(text)
 
-            print("\n>>> Auto-run mode stopped, because of manual termination. <<<")
+            print("\n>>> Auto-run mode stopped, because of manual termination. ")
 
         # save
         self.driver.find_element("xpath", "//button[text()='Save' and @type='button']").click()
@@ -180,7 +181,7 @@ class Automation(object):
         try:
             r = requests.post(url, headers=headers, params=payload, data=post_data)
             r.raise_for_status()
-            print("\n>>> Message sent access! <<<")
+            print("\n>>> Message sent access! ")
         except requests.RequestException as e:
             print('recipient:' + self.recipient)
             print('text:' + text)
@@ -198,9 +199,9 @@ if __name__ == '__main__':
 
     if auto_run == "true":
         auto.jenkinsAuto()
-        print("\n>>> Automation is starting!!! <<<")
+        print("\n>>> Automation is starting!!! ")
     elif terminate == "true":
         auto.jenkinsAuto()
-        print("\n>>> Automation was stopped!!! <<<")
+        print("\n>>> Automation was stopped!!! ")
     else:
         auto.firebaseAuto()
