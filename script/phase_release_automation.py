@@ -105,8 +105,8 @@ class Automation(object):
 
         print('\n>>> Firebase "Increase distribution" have been updated. <<< \n>>> And now, Increase distribution = {}%. <<<\n', nownu)
         text = '''
-            Change {}: Firebase "Increase distribution" have been updated. \n
-            Increase distribution = {}%.
+        Change {}: Firebase "Increase distribution" have been updated.
+        Increase distribution = {}%.
         '''.format(index+1, nownu)
 
         self.send_message(text)
@@ -142,8 +142,8 @@ class Automation(object):
             selector1.send_keys(self.url)
 
             text = '''
-                Auto-run mode started. \n
-                It will run automatically according to the rule of [1%,2%,5%,10%,20%,50%,100%].
+            Auto-run mode started.
+            It will run automatically according to the rule of [1%,2%,5%,10%,20%,50%,100%].
             '''
             self.send_message(text)
 
