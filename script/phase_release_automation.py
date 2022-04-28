@@ -104,7 +104,11 @@ class Automation(object):
         self.wait.until_not(ec.presence_of_element_located(('css selector', '.send-button')))
 
         print('\n>>> Firebase "Increase distribution" have been updated. <<< \n>>> And now, Increase distribution = {}%. <<<\n', nownu)
-        text = 'Day {} : Firebase "Increase distribution" have been updated. Increase distribution = {}%.'.format(index+2, nownu)
+        text = '''
+            Change {}: Firebase "Increase distribution" have been updated. \n
+            Increase distribution = {}%.
+        '''.format(index+1, nownu)
+
         self.send_message(text)
 
         if int(nownu) == 100:
@@ -113,7 +117,6 @@ class Automation(object):
             self.send_message(text)
         else:
             self.driver.quit()
-
 
     def jenkinsAuto(self):
         print("\n>>> Opening jenkins website. <<<")
@@ -138,10 +141,13 @@ class Automation(object):
             selector1.clear()
             selector1.send_keys(self.url)
 
-            text = "Day 1 : Auto-run mode started. It will run automatically every day according to the rule of [1%,2%,5%,10%,20%,50%,100%]. Increase distribution = 1%."
+            text = '''
+                Auto-run mode started. \n
+                It will run automatically according to the rule of [1%,2%,5%,10%,20%,50%,100%].
+            '''
             self.send_message(text)
 
-            print("\n>>> Auto-run mode started. It will run automatically every day according to the rule of [1%,2%,5%,10%,20%,50%,100%]. Increase distribution = 1%. <<<")
+            print("\n>>> Auto-run mode started. It will run automatically according to the rule of [1%,2%,5%,10%,20%,50%,100%]. <<<")
         elif terminate == "true":
             text = "Auto-run mode stopped, because of manual termination."
             self.send_message(text)
