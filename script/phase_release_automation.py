@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
-
+import datetime
 import json
 import os
 import sys
 import time
 
 import requests
+from chinese_calendar import is_workday
 from selenium import webdriver
 from dotenv import dotenv_values
 from selenium.webdriver import DesiredCapabilities, Keys
@@ -135,7 +136,7 @@ class Automation(object):
 
         # set default value
         if auto_run == "true":
-            self.driver.find_element("css selector", 'div.config_general:nth-child(11) > div:nth-child(4) > div:nth-child(4) > div:nth-child(1) > div:nth-child(2) > textarea:nth-child(1)').send_keys("H 9 * * *")
+            self.driver.find_element("css selector", 'div.config_general:nth-child(11) > div:nth-child(4) > div:nth-child(4) > div:nth-child(1) > div:nth-child(2) > textarea:nth-child(1)').send_keys("0 9 * * *")
 
             selector1 = self.driver.find_element("css selector", 'div.hetero-list-container:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(4) > div:nth-child(2) > input:nth-child(1)')
             selector1.clear()
@@ -190,6 +191,22 @@ class Automation(object):
         else:
             return r.json()
 
+    def dateJudgement(self):
+        year = datetime.datetime.now().strftime("%Y")
+        mouth = datetime.datetime.now().strftime("%m")
+        day = datetime.datetime.now().strftime("%d")
+
+        t_mouth = (datetime.datetime.now() + datetime.timedelta(days=1)).strftime("%m")
+        t_day = datetime.datetime.now().strftime("%d")
+
+        date_now = datetime.date(int(year),int(mouth),int(day))
+        tomorrow = datetime.date(int(year),int(t_mouth),int(t_day))
+
+        today_work = is_workday(date_now)
+        tomorrow_work = is_workday(tomorrow)
+
+        return today_work,tomorrow_work
+
 
 if __name__ == '__main__':
     auto = Automation()
@@ -197,11 +214,14 @@ if __name__ == '__main__':
     auto_run = sys.argv[2]
     terminate = sys.argv[3]
 
-    if auto_run == "true":
-        auto.jenkinsAuto()
-        print("\n>>> Automation is starting!!! ")
-    elif terminate == "true":
-        auto.jenkinsAuto()
-        print("\n>>> Automation was stopped!!! ")
-    else:
-        auto.firebaseAuto()
+    today_work, tomorrow_work = auto.dateJudgement()
+
+    if today_work == "True" and tomorrow_work == "True":
+        if auto_run == "true":
+            auto.jenkinsAuto()
+            print("\n>>> Automation is starting!!! ")
+        elif terminate == "true":
+            auto.jenkinsAuto()
+            print("\n>>> Automation was stopped!!! ")
+        else:
+            auto.firebaseAuto()
