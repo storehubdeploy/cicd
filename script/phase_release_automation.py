@@ -8,8 +8,8 @@ import time
 
 import requests
 from chinese_calendar import is_workday
-from selenium import webdriver
 from dotenv import dotenv_values
+from selenium import webdriver
 from selenium.webdriver import DesiredCapabilities, Keys
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
@@ -197,7 +197,7 @@ class Automation(object):
         day = datetime.datetime.now().strftime("%d")
 
         t_mouth = (datetime.datetime.now() + datetime.timedelta(days=1)).strftime("%m")
-        t_day = datetime.datetime.now().strftime("%d")
+        t_day = (datetime.datetime.now() + datetime.timedelta(days=1)).strftime("%d")
 
         date_now = datetime.date(int(year),int(mouth),int(day))
         tomorrow = datetime.date(int(year),int(t_mouth),int(t_day))
