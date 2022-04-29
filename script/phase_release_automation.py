@@ -74,7 +74,7 @@ class Automation(object):
         # Open website
         driver = webdriver.Firefox(executable_path=driver_path, options=options, firefox_profile=profile, desired_capabilities=desired)
 
-        print("\n>>> Creating firefox driver success.")
+        print("\n{} \n>>> Creating firefox driver success.".format(self.today))
         return driver
 
 
