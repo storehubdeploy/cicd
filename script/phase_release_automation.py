@@ -142,7 +142,7 @@ class Automation(object):
         time.sleep(2)
 
         # set default value
-        if auto_run == "true":
+        if auto_run == "true" and terminate == "false":
             self.driver.find_element("css selector", 'div.config_general:nth-child(11) > div:nth-child(4) > div:nth-child(4) > div:nth-child(1) > div:nth-child(2) > textarea:nth-child(1)').send_keys("0 9 * * *")
 
             selector1 = self.driver.find_element("css selector", 'div.hetero-list-container:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(4) > div:nth-child(2) > input:nth-child(1)')
