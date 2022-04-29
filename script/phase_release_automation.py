@@ -94,7 +94,7 @@ class Automation(object):
         if int(prenu) == 50 and tomorrow_work == False:
             nownu = int(prenu)
             print("Today({}) is last workday, not updating to 100.".format(self.today))
-            text = '{}: Today is last workday, not updating to 100.'
+            text = '{}: Today is last workday, not updating to 100.'.format(self.today)
             self.send_message(text)
         else:
             index = self.increases.index(int(prenu))
