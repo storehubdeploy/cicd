@@ -91,7 +91,7 @@ class Automation(object):
         # get last number and set present number
         prenu = self.driver.find_element('css selector', 'input.ng-pristine').get_attribute('value')
 
-        if int(prenu) == 50 and tomorrow_work == "False":
+        if int(prenu) == 50 and tomorrow_work == False:
             nownu = int(prenu)
             print("Today({}) is last workday, not updating to 100.".format(self.today))
             text = '{}: Today is last workday, not updating to 100.'
@@ -231,7 +231,7 @@ if __name__ == '__main__':
         auto.jenkinsAuto()
         print("\n>>> Automation was stopped!!! ")
     elif auto_run == "false" and terminate == "false":
-        if today_work == "True":
+        if today_work:
             auto.firebaseAuto()
         else:
             print("\nToday({}) is holiday or last workday, not running automation.".format(datetime.datetime.now().strftime("%Y-%m-%d")))
