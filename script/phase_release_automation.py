@@ -78,14 +78,12 @@ class Automation(object):
 
 
     def firebaseAuto(self):
-        print("\n>>> Opening firebash website. ")
+        print("\n>>> Opening firebase website. ")
         self.driver.get(self.url)
 
         # waiting for loading complete
         self.wait.until(ec.presence_of_element_located(('css selector', 'button.mat-menu-trigger:nth-child(1)')))
 
-
-        print("\n>>> Firebase : Starting operation. ")
         self.driver.find_element('css selector', 'button.mat-menu-trigger:nth-child(1)').click()
         self.driver.find_element('css selector', '.increase-distribution-button').click()
 
@@ -105,7 +103,7 @@ class Automation(object):
         # waiting for operating before
         self.wait.until_not(ec.presence_of_element_located(('css selector', '.send-button')))
 
-        print('\n>>> Firebase "Increase distribution" have been updated.  \n>>> And now, Increase distribution = {}%. \n'.format(nownu))
+        print('\n>>> Firebase "Increase distribution" have been updated.  \n>>> And now, Increase distribution = {}%. '.format(nownu))
         text = '''
         Change {}: Firebase "Increase distribution" have been updated.\nIncrease distribution = {}%.
         '''.format(index+1, nownu)
@@ -114,6 +112,7 @@ class Automation(object):
 
         if int(nownu) == 100:
             Automation.jenkinsAuto(self)
+            print("\n>>> Auto-run mode stopped, because of Increase distribution = 100%.")
             text = "Auto-run mode stopped, because of Increase distribution = 100%."
             self.send_message(text)
         else:
@@ -182,7 +181,7 @@ class Automation(object):
         try:
             r = requests.post(url, headers=headers, params=payload, data=post_data)
             r.raise_for_status()
-            print("\n>>> Message sent access! ")
+            print("\n>>> Message sent success! ")
         except requests.RequestException as e:
             print('recipient:' + self.recipient)
             print('text:' + text)
@@ -225,3 +224,5 @@ if __name__ == '__main__':
             print("\n>>> Automation was stopped!!! ")
         else:
             auto.firebaseAuto()
+    else:
+        print("\n{}:Today is holiday or last workday, not running automation.".format(datetime.datetime.now().strftime("%Y-%m-%d")))
