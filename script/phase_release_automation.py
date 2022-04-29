@@ -19,6 +19,7 @@ class Automation(object):
     def __init__(self):
         self.url = sys.argv[1]
         self.increases = [1, 2, 5, 10, 20, 50, 100]
+        self.today = datetime.datetime.now().strftime("%Y-%m-%d")
 
         self.JENKISN_USER, self.JENKISN_PWD, self.WORKPLACE_URL, self.WORKPLACE_TOKEN = self.info()
         self.recipient = self.getApolloConfig()
@@ -90,33 +91,38 @@ class Automation(object):
         # get last number and set present number
         prenu = self.driver.find_element('css selector', 'input.ng-pristine').get_attribute('value')
 
-        index = self.increases.index(int(prenu))
-        nownu = self.increases[index+1]
+        if int(prenu) == 50 and tomorrow_work == "False":
+            nownu = int(prenu)
+            print("Today({}) is last workday, not updating to 100.".format(self.today))
+        else:
+            index = self.increases.index(int(prenu))
+            nownu = self.increases[index+1]
 
-        time.sleep(2)
-        self.driver.find_element('css selector', 'input.ng-pristine').clear()
-        self.driver.find_element('css selector', 'input.ng-pristine').send_keys(nownu)
+            time.sleep(2)
+            self.driver.find_element('css selector', 'input.ng-pristine').clear()
+            self.driver.find_element('css selector', 'input.ng-pristine').send_keys(nownu)
 
-        time.sleep(2)
-        self.driver.find_element('css selector', '.send-button').click()
+            time.sleep(2)
+            self.driver.find_element('css selector', '.send-button').click()
 
-        # waiting for operating before
-        self.wait.until_not(ec.presence_of_element_located(('css selector', '.send-button')))
+            # waiting for operating before
+            self.wait.until_not(ec.presence_of_element_located(('css selector', '.send-button')))
 
-        print('\n>>> Firebase "Increase distribution" have been updated.  \n>>> And now, Increase distribution = {}%. '.format(nownu))
-        text = '''
-        Change {}: Firebase "Increase distribution" have been updated.\nIncrease distribution = {}%.
-        '''.format(index+1, nownu)
+            print('\n>>>"Increase distribution" have been updated.  \n>>> And now, Increase distribution = {}%. '.format(nownu))
+            text = '''
+            {}: "Increase distribution" have been updated.\nIncrease distribution = {}%.
+            '''.format(self.today, nownu)
 
-        self.send_message(text)
+            self.send_message(text)
 
         if int(nownu) == 100:
             Automation.jenkinsAuto(self)
             print("\n>>> Auto-run mode stopped, because of Increase distribution = 100%.")
-            text = "Auto-run mode stopped, because of Increase distribution = 100%."
+            text = "{}: Auto-run mode stopped, because of Increase distribution = 100%.".format(self.today)
             self.send_message(text)
         else:
             self.driver.quit()
+
 
     def jenkinsAuto(self):
         print("\n>>> Opening jenkins website. ")
@@ -142,13 +148,13 @@ class Automation(object):
             selector1.send_keys(self.url)
 
             text = '''
-            Auto-run mode started.\nIt will run automatically according to the rule of [1%,2%,5%,10%,20%,50%,100%].
-            '''
+            {}: Auto-run mode started.\nIt will run automatically according to the rule of [1%,2%,5%,10%,20%,50%,100%].\nURL: {}
+            '''.format(self.today, self.url)
             self.send_message(text)
 
             print("\n>>> Auto-run mode started. It will run automatically according to the rule of [1%,2%,5%,10%,20%,50%,100%]. ")
         elif terminate == "true":
-            text = "Auto-run mode stopped, because of manual termination."
+            text = "{}: Auto-run mode stopped, because of manual termination.".format(self.today)
             self.send_message(text)
 
             print("\n>>> Auto-run mode stopped, because of manual termination. ")
@@ -190,6 +196,7 @@ class Automation(object):
         else:
             return r.json()
 
+
     def dateJudgement(self):
         year = datetime.datetime.now().strftime("%Y")
         mouth = datetime.datetime.now().strftime("%m")
@@ -215,14 +222,19 @@ if __name__ == '__main__':
 
     today_work, tomorrow_work = auto.dateJudgement()
 
-    if today_work == "True" and tomorrow_work == "True":
-        if auto_run == "true":
-            auto.jenkinsAuto()
-            print("\n>>> Automation is starting!!! ")
-        elif terminate == "true":
-            auto.jenkinsAuto()
-            print("\n>>> Automation was stopped!!! ")
-        else:
+    if auto_run == "true" and terminate == "false":
+        auto.jenkinsAuto()
+        print("\n>>> Automation is starting!!! ")
+    elif terminate == "true" or (terminate == "true" and auto_run == "true"):
+        auto.jenkinsAuto()
+        print("\n>>> Automation was stopped!!! ")
+    elif auto_run == "false" and terminate == "false":
+        if today_work == "True":
             auto.firebaseAuto()
+        else:
+            print("\nToday({}) is holiday or last workday, not running automation.".format(datetime.datetime.now().strftime("%Y-%m-%d")))
     else:
-        print("\n{}:Today is holiday or last workday, not running automation.".format(datetime.datetime.now().strftime("%Y-%m-%d")))
+        print("error")
+
+
+
