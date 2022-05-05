@@ -125,7 +125,7 @@ class Automation(object):
         # start opration
         self.wait.until(ec.presence_of_element_located(("css selector", '#j_username')))
         self.driver.find_element("css selector", '#j_username').send_keys(CONSTANTS.JENKINS_USER)
-        self.driver.find_element("css selector", 'div.formRow:nth-child(2) > input:nth-child(1)').send_keys(CONSTANTS.JENKINS_PWD)
+        self.driver.find_element("css selector", 'div.formRow:nth-child(2) > input:nth-child(1)').send_keys(CONSTANTS.JENKINS_PASSWORD)
         self.driver.find_element("css selector", '.submit-button').click()
 
         # auto stop
