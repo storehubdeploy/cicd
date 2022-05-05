@@ -105,7 +105,7 @@ class Automation(object):
             self.send_message(text)
 
         if int(nownu) == 100:
-            Automation.jenkinsAuto(self)
+            self.jenkinsAuto()
             print("\n>>> Auto-run mode stopped, because of Increase distribution = 100%.")
             text = "{}: Auto-run mode stopped, because of Increase distribution = 100%.".format(self.today)
             self.send_message(text)
@@ -136,6 +136,11 @@ class Automation(object):
             selector1.clear()
             selector1.send_keys(self.url)
 
+            time.sleep(1)
+            selector2 = self.driver.find_element("css selector", '#main-panel > div > div > div > form > div.config-table.scrollspy > div:nth-child(5) > div.form-container.tr.config-table-top-row > div:nth-child(11) > div.form-container.tr.config-table-top-row > div > div > div > div.form-container.tr.config-table-top-row > div > div:nth-child(2) > div > div:nth-child(1) > div > div:nth-child(4) > div.setting-main > textarea')
+            selector2.clear()
+            selector2.send_keys("Running")
+
             text = '''
             {}: Auto-run mode started.\nIt will run automatically according to the rule of [1%,2%,5%,10%,20%,50%,100%].\nURL: {}
             '''.format(self.today, self.url)
@@ -143,10 +148,10 @@ class Automation(object):
 
             print("\n>>> Auto-run mode started. It will run automatically according to the rule of [1%,2%,5%,10%,20%,50%,100%]. ")
         elif terminate == "true":
-            text = "{}: Auto-run mode stopped, because of manual termination.".format(self.today)
-            self.send_message(text)
-
-            print("\n>>> Auto-run mode stopped, because of manual termination. ")
+            time.sleep(1)
+            selector1 = self.driver.find_element("css selector", '#main-panel > div > div > div > form > div.config-table.scrollspy > div:nth-child(5) > div.form-container.tr.config-table-top-row > div:nth-child(11) > div.form-container.tr.config-table-top-row > div > div > div > div.form-container.tr.config-table-top-row > div > div:nth-child(2) > div > div:nth-child(1) > div > div:nth-child(4) > div.setting-main > textarea')
+            selector1.clear()
+            selector1.send_keys("Stopped")
 
         # save
         self.driver.find_element("xpath", "//button[text()='Save' and @type='button']").click()
@@ -208,22 +213,28 @@ if __name__ == '__main__':
 
     auto_run = sys.argv[2]
     terminate = sys.argv[3]
+    auto_status = sys.argv[4]
 
     today_work, tomorrow_work = auto.dateJudgement()
 
-    if auto_run == "true" and terminate == "false":
+    if auto_run == "true" and terminate == "false" and auto_status == "Stopped":
         auto.jenkinsAuto()
         print("\n>>> Automation is starting!!! ")
-    elif terminate == "true":
+    elif terminate == "true" and auto_status == "Running":
         auto.jenkinsAuto()
-        print("\n>>> Automation was stopped!!! ")
+
+        # Send message
+        text = "{}: Auto-run mode stopped, because of manual termination.".format(datetime.datetime.now().strftime("%Y-%m-%d"))
+        auto.send_message(text)
+
+        print("\n>>> Auto-run mode stopped, because of manual termination. ")
     elif auto_run == "false" and terminate == "false":
         if today_work:
             auto.firebaseAuto()
         else:
             print("\nToday({}) is holiday or last workday, not running automation.".format(datetime.datetime.now().strftime("%Y-%m-%d")))
     else:
-        print("error")
+        print("Illegal operation, please check the status of the Jenkins job.\n Jenkins auto_run status : ", auto_status)
 
 
 
