@@ -1,18 +1,20 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
+
 import datetime
 import json
-import os
 import sys
 import time
 
 import requests
 from chinese_calendar import is_workday
-from dotenv import dotenv_values
 from selenium import webdriver
 from selenium.webdriver import DesiredCapabilities, Keys
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
+
+sys.path.append("..")
+import ci_constants as CONSTANTS
 
 
 class Automation(object):
@@ -20,25 +22,10 @@ class Automation(object):
         self.url = sys.argv[1]
         self.increases = [1, 2, 5, 10, 20, 50, 100]
         self.today = datetime.datetime.now().strftime("%Y-%m-%d")
-
-        self.JENKISN_USER, self.JENKISN_PWD, self.WORKPLACE_URL, self.WORKPLACE_TOKEN = self.info()
         self.recipient = self.getApolloConfig()
 
         self.driver = Automation.firefoxDriver(self)
         self.wait = WebDriverWait(self.driver, 150)
-
-
-    def info(self):
-        path = os.path.join(os.path.dirname(__file__), 'ci.env')
-        config = dotenv_values(path)
-
-        JENKISN_USER = config['JENKISN_USER']
-        JENKISN_PWD = config['JENKISN_PWD']
-
-        WORKPLACE_URL = config['WORKPLACE_URL']
-        WORKPLACE_TOKEN = config['WORKPLACE_TOKEN']
-
-        return JENKISN_USER, JENKISN_PWD, WORKPLACE_URL, WORKPLACE_TOKEN
 
 
     def getApolloConfig(self):
@@ -61,7 +48,7 @@ class Automation(object):
 
         # init
         options = webdriver.FirefoxOptions()
-        options.add_argument("-headless") # Windowless mode
+        options.add_argument("-headless")  # Windowless mode
         options.set_preference('browser.link.open_newwindow', '3')
         options.set_preference('permissions.default.image', 2)  # no pictures mode
 
@@ -93,8 +80,8 @@ class Automation(object):
 
         if int(prenu) == 50 and tomorrow_work == False:
             nownu = int(prenu)
-            print("Today({}) is last workday, not updating to 100.".format(self.today))
-            text = '{}: Today is last workday, not updating to 100.'.format(self.today)
+            print("Today({}) is last workday, not updating to 100%.\nIncrease distribution = 50%.".format(self.today))
+            text = '{}: Today is last workday, not updating to 100%.\nIncrease distribution = 50%.'.format(self.today,)
             self.send_message(text)
         else:
             index = self.increases.index(int(prenu))
@@ -132,8 +119,8 @@ class Automation(object):
 
         # start opration
         self.wait.until(ec.presence_of_element_located(("css selector", '#j_username')))
-        self.driver.find_element("css selector", '#j_username').send_keys(self.JENKISN_USER)
-        self.driver.find_element("css selector", 'div.formRow:nth-child(2) > input:nth-child(1)').send_keys(self.JENKISN_PWD)
+        self.driver.find_element("css selector", '#j_username').send_keys(CONSTANTS.JENKISN_USER)
+        self.driver.find_element("css selector", 'div.formRow:nth-child(2) > input:nth-child(1)').send_keys(CONSTANTS.JENKISN_PWD)
         self.driver.find_element("css selector", '.submit-button').click()
 
         # auto stop
@@ -182,9 +169,9 @@ class Automation(object):
         }
 
         post_data = json.dumps(data)
-        url = self.WORKPLACE_URL
+        url = CONSTANTS.WORKPLACE_URL
         headers = {'Content-Type': 'application/json'}
-        payload = {'access_token': self.WORKPLACE_TOKEN}
+        payload = {'access_token': CONSTANTS.WORKPLACE_TOKEN}
 
         try:
             r = requests.post(url, headers=headers, params=payload, data=post_data)
@@ -227,7 +214,7 @@ if __name__ == '__main__':
     if auto_run == "true" and terminate == "false":
         auto.jenkinsAuto()
         print("\n>>> Automation is starting!!! ")
-    elif terminate == "true" or (terminate == "true" and auto_run == "true"):
+    elif terminate == "true":
         auto.jenkinsAuto()
         print("\n>>> Automation was stopped!!! ")
     elif auto_run == "false" and terminate == "false":
