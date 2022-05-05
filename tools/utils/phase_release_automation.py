@@ -239,7 +239,9 @@ if __name__ == '__main__':
         else:
             print("\nToday({}) is holiday or last workday, not running automation.".format(datetime.datetime.now().strftime("%Y-%m-%d")))
     else:
-        print("Illegal operation, please check the status of the Jenkins job.\n Jenkins auto_run status : ", auto_status)
+        print("Illegal operation, please check the status of the Jenkins job.\nJenkins auto_run status : ", auto_status)
+        text = "Illegal operation, please check the status of the Jenkins job.\nJenkins auto_run status : {}".format(auto_status)
+        auto.send_message(text)
 
 
 
