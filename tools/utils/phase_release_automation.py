@@ -137,12 +137,12 @@ class Automation(object):
         if auto_run == "true" and terminate == "false":
             self.driver.find_element("css selector", 'div.config_general:nth-child(11) > div:nth-child(4) > div:nth-child(4) > div:nth-child(1) > div:nth-child(2) > textarea:nth-child(1)').send_keys("0 9 * * *")
 
-            selector1 = self.driver.find_element("css selector", 'div.hetero-list-container:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(4) > div:nth-child(2) > input:nth-child(1)')
+            selector1 = self.driver.find_element("css selector", 'div.repeated-chunk:nth-child(2) > div:nth-child(1) > div:nth-child(4) > div:nth-child(2) > input:nth-child(1)')
             selector1.clear()
             selector1.send_keys(self.url)
 
             time.sleep(1)
-            selector2 = self.driver.find_element("css selector", '#main-panel > div > div > div > form > div.config-table.scrollspy > div:nth-child(5) > div.form-container.tr.config-table-top-row > div:nth-child(11) > div.form-container.tr.config-table-top-row > div > div > div > div.form-container.tr.config-table-top-row > div > div:nth-child(2) > div > div:nth-child(1) > div > div:nth-child(4) > div.setting-main > textarea')
+            selector2 = self.driver.find_element("css selector", 'div.hetero-list-container:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(4) > div:nth-child(2) > textarea:nth-child(1)')
             selector2.clear()
             selector2.send_keys("Running")
 
@@ -154,7 +154,7 @@ class Automation(object):
             print("\n>>> Auto-run mode started. It will run automatically according to the rule of [1%,2%,5%,10%,20%,50%,100%]. ")
         elif terminate == "true":
             time.sleep(1)
-            selector1 = self.driver.find_element("css selector", '#main-panel > div > div > div > form > div.config-table.scrollspy > div:nth-child(5) > div.form-container.tr.config-table-top-row > div:nth-child(11) > div.form-container.tr.config-table-top-row > div > div > div > div.form-container.tr.config-table-top-row > div > div:nth-child(2) > div > div:nth-child(1) > div > div:nth-child(4) > div.setting-main > textarea')
+            selector1 = self.driver.find_element("css selector", 'div.hetero-list-container:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(4) > div:nth-child(2) > textarea:nth-child(1)')
             selector1.clear()
             selector1.send_keys("Stopped")
 
