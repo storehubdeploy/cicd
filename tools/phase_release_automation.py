@@ -143,7 +143,7 @@ class Automation(object):
 
 
     def text(self, today, action, release_name, distribution, url):
-        text = '''Date：{}\nAction: {}\nRelease: {}\nCurrent Stage: {}\nURL: {}'''.format(today, action, release_name, distribution, url)
+        text = '''Date: {}\nAction: {}\nRelease: {}\nCurrent Stage: {}\nURL: {}'''.format(today, action, release_name, distribution, url)
 
         return text
 
