@@ -17,6 +17,8 @@ import ci_constants as CONSTANTS
 
 class Automation(object):
     def __init__(self):
+        self.url = sys.argv[1]
+        self.today = datetime.datetime.now().strftime("%Y-%m-%d")
         self.increases = [1, 2, 5, 10, 20, 50, 100]
         self.recipient = self.getApolloConfig()
 
@@ -57,12 +59,12 @@ class Automation(object):
         # Open website
         driver = webdriver.Firefox(executable_path=driver_path, options=options, firefox_profile=profile, desired_capabilities=desired)
 
-        print("\n{} \n>>> Creating firefox driver success.".format(today))
+        print("\n{} \n>>> Creating firefox driver success.".format(self.today))
         return driver
 
 
     def getFirebaseValues(self):
-        self.driver.get(url)
+        self.driver.get(self.url)
 
         self.wait.until(ec.presence_of_element_located(('css selector', 'button.mat-menu-trigger:nth-child(1)')))
 
@@ -76,7 +78,7 @@ class Automation(object):
 
     def firebaseAuto(self):
         print("\n>>> Opening firebase website. ")
-        self.driver.get(url)
+        self.driver.get(self.url)
 
         # waiting for loading complete
         self.wait.until(ec.presence_of_element_located(('css selector', 'button.mat-menu-trigger:nth-child(1)')))
@@ -126,7 +128,7 @@ class Automation(object):
 
             selector1 = self.driver.find_element("css selector", 'div.repeated-chunk:nth-child(2) > div:nth-child(1) > div:nth-child(4) > div:nth-child(2) > input:nth-child(1)')
             selector1.clear()
-            selector1.send_keys(url)
+            selector1.send_keys(self.url)
 
             time.sleep(1)
             selector2 = self.driver.find_element("css selector", 'div.hetero-list-container:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(4) > div:nth-child(2) > textarea:nth-child(1)')
@@ -208,12 +210,10 @@ class Automation(object):
 if __name__ == '__main__':
     auto = Automation()
 
-    url = sys.argv[1]
     auto_run = sys.argv[2]
     terminate = sys.argv[3]
     auto_status = sys.argv[4]
 
-    today = datetime.datetime.now().strftime("%Y-%m-%d")
     today_work, tomorrow_work = auto.dateJudgement()
     release_name, distribution = auto.getFirebaseValues()
 
@@ -221,7 +221,7 @@ if __name__ == '__main__':
         auto.jenkinsAuto()  # main
 
         action = "Auto-run mode started."
-        text = auto.text(today, action, release_name, distribution, url)
+        text = auto.text(auto.today, action, release_name, distribution, auto.url)
 
         print(text)
         auto.send_message(text)
@@ -230,7 +230,7 @@ if __name__ == '__main__':
         auto.jenkinsAuto()  # main
 
         action = "Auto-run mode stopped, because of manual termination."
-        text = auto.text(today, action, release_name, distribution, url)
+        text = auto.text(auto.today, action, release_name, distribution, auto.url)
 
         print(text)
         auto.send_message(text)
@@ -239,7 +239,7 @@ if __name__ == '__main__':
         if today_work:
             if int(distribution) == 50 and tomorrow_work == False:
                 action = "Today is last workday, not updating to 100%."
-                text = auto.text(today, action, release_name, distribution, url)
+                text = auto.text(auto.today, action, release_name, distribution, auto.url)
 
                 print(text)
                 auto.send_message(text)
@@ -247,7 +247,7 @@ if __name__ == '__main__':
                 auto.jenkinsAuto()
 
                 action = "Increase distribution had already been update to 100%. Stopped auto-run."
-                text = auto.text(today, action, release_name, distribution, url)
+                text = auto.text(auto.today, action, release_name, distribution, auto.url)
 
                 print(text)
                 auto.send_message(text)
@@ -258,18 +258,18 @@ if __name__ == '__main__':
                     auto.jenkinsAuto()
 
                     action = 'Auto-run mode stopped, because of "Increase distribution" = 100%.'
-                    text = auto.text(today, action, release_name, distribution, url)
+                    text = auto.text(auto.today, action, release_name, distribution, auto.url)
 
                     print(text)
                     auto.send_message(text)
                 else:
                     action = 'Increase phase stage.'
-                    text = auto.text(today, action, release_name, distribution, url)
+                    text = auto.text(auto.today, action, release_name, distribution, auto.url)
 
                     print(text)
                     auto.send_message(text)
         else:
-            print("\nToday({}) is holiday or last workday, not running automation.".format(today))
+            print("\nToday({}) is holiday or last workday, not running automation.".format(auto.today))
     else:
         print("Illegal operation, please check the status of the Jenkins job.\nJenkins auto_run status : ", auto_status)
         text = "Illegal operation, please check the status of the Jenkins job.\nJenkins auto_run status : {}".format(auto_status)
