@@ -71,7 +71,7 @@ class Automation(object):
         release_name = self.driver.find_element("css selector", '.fire-feature-bar-title').text
         distribution = self.driver.find_element('css selector', 'div.summary-chip:nth-child(5) > div:nth-child(2)').text
 
-        self.driver.quit()
+        self.driver.close()
 
         return release_name, distribution
 
@@ -101,8 +101,6 @@ class Automation(object):
 
         # waiting for operating before
         self.wait.until_not(ec.presence_of_element_located(('css selector', '.send-button')))
-
-        self.driver.quit()
 
         return nownu
 
@@ -143,8 +141,6 @@ class Automation(object):
         # save
         self.driver.find_element("xpath", "//button[text()='Save' and @type='button']").click()
         self.wait.until_not(ec.presence_of_element_located(("xpath", "//button[text()='Save' and @type='button']")))
-
-        self.driver.quit()
 
 
     def text(self, today, action, release_name, distribution, url):
@@ -219,6 +215,7 @@ if __name__ == '__main__':
 
     if auto_run == "true" and terminate == "false" and auto_status == "Stopped":
         auto.jenkinsAuto()  # main
+        auto.driver.quit()
 
         action = "Auto-run mode started."
         text = auto.text(auto.today, action, release_name, distribution, auto.url)
@@ -228,6 +225,7 @@ if __name__ == '__main__':
 
     elif terminate == "true" and auto_status == "Running":
         auto.jenkinsAuto()  # main
+        auto.driver.quit()
 
         action = "Auto-run mode stopped, because of manual termination."
         text = auto.text(auto.today, action, release_name, distribution, auto.url)
@@ -238,6 +236,7 @@ if __name__ == '__main__':
     elif auto_run == "false" and terminate == "false":
         if today_work:
             if int(distribution) == 50 and tomorrow_work == False:
+                auto.driver.quit()
                 action = "Today is last workday, not updating to 100%."
                 text = auto.text(auto.today, action, release_name, distribution, auto.url)
 
@@ -245,6 +244,7 @@ if __name__ == '__main__':
                 auto.send_message(text)
             elif int(distribution) == 100:
                 auto.jenkinsAuto()
+                auto.driver.quit()
 
                 action = "Increase distribution had already been update to 100%. Stopped auto-run."
                 text = auto.text(auto.today, action, release_name, distribution, auto.url)
@@ -256,6 +256,7 @@ if __name__ == '__main__':
 
                 if int(nownu) == 100:
                     auto.jenkinsAuto()
+                    auto.driver.quit()
 
                     action = 'Auto-run mode stopped, because of "Increase distribution" = 100%.'
                     text = auto.text(auto.today, action, release_name, distribution, auto.url)
@@ -263,6 +264,7 @@ if __name__ == '__main__':
                     print(text)
                     auto.send_message(text)
                 else:
+                    auto.driver.quit()
                     action = 'Increase phase stage.'
                     text = auto.text(auto.today, action, release_name, distribution, auto.url)
 
