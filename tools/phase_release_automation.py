@@ -144,13 +144,7 @@ class Automation(object):
 
 
     def text(self, today, action, release_name, distribution, url):
-        text = '''
-        Date：{}
-        Action: {}
-        Release: {}
-        Current Stage: {}
-        Url: {}
-        '''.format(today, action, release_name, distribution, url)
+        text = '''Date：{}\nAction: {}\nRelease: {}\nCurrent Stage: {}\nURL: {}'''.format(today, action, release_name, distribution, url)
 
         return text
 
@@ -258,15 +252,15 @@ if __name__ == '__main__':
                     auto.jenkinsAuto()
                     auto.driver.quit()
 
-                    action = 'Auto-run mode stopped, because of "Increase distribution" = 100%.'
-                    text = auto.text(auto.today, action, release_name, distribution, auto.url)
+                    action = '"Increase distribution" update to 100%. And auto-run mode stopped.'
+                    text = auto.text(auto.today, action, release_name, 100, auto.url)
 
                     print(text)
                     auto.send_message(text)
                 else:
                     auto.driver.quit()
                     action = 'Increase phase stage.'
-                    text = auto.text(auto.today, action, release_name, distribution, auto.url)
+                    text = auto.text(auto.today, action, release_name, nownu, auto.url)
 
                     print(text)
                     auto.send_message(text)
