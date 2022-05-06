@@ -71,7 +71,7 @@ class Automation(object):
         release_name = self.driver.find_element("css selector", '.fire-feature-bar-title').text
         distribution = self.driver.find_element('css selector', 'div.summary-chip:nth-child(5) > div:nth-child(2)').text
 
-        self.driver.close()
+        # self.driver.close()
 
         return release_name, distribution
 
