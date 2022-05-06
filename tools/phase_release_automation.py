@@ -12,8 +12,6 @@ from selenium import webdriver
 from selenium.webdriver import DesiredCapabilities, Keys
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
-
-sys.path.append("/System/Volumes/Data/data/ops/ci/cicd/tools/")
 import ci_constants as CONSTANTS
 
 
