@@ -66,12 +66,11 @@ class Automation(object):
     def getFirebaseValues(self):
         self.driver.get(self.url)
 
-        self.wait.until(ec.presence_of_element_located(('css selector', 'button.mat-menu-trigger:nth-child(1)')))
+        self.wait.until(ec.presence_of_element_located(('css selector', 'div.summary-chip:nth-child(5) > div:nth-child(2)')))
 
         release_name = self.driver.find_element("css selector", '.fire-feature-bar-title').text
         distribution = self.driver.find_element('css selector', 'div.summary-chip:nth-child(5) > div:nth-child(2)').text
 
-        # self.driver.close()
 
         return release_name, distribution
 
