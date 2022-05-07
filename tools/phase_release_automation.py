@@ -67,7 +67,7 @@ class Automation(object):
         print("\n>>> Opening firebase website. ")
         self.driver.get(self.url)
 
-        self.wait.until(ec.presence_of_element_located(('css selector', '.fire-feature-bar-title')))
+        self.wait.until(ec.presence_of_element_located(('css selector', 'div.summary-chip:nth-child(5) > div:nth-child(2)')))
 
         release_name = self.driver.find_element("css selector", '.fire-feature-bar-title').text
         distributions = self.driver.find_element("css selector", 'div.summary-chip:nth-child(5) > div:nth-child(2)').text
