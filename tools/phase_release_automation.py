@@ -67,20 +67,25 @@ class Automation(object):
         print("\n>>> Opening firebase website. ")
         self.driver.get(self.url)
 
-        self.wait.until(ec.presence_of_element_located(('css selector', 'button.mat-menu-trigger:nth-child(1)')))
+        self.wait.until(ec.presence_of_element_located(('css selector', '.fire-feature-bar-title')))
 
         release_name = self.driver.find_element("css selector", '.fire-feature-bar-title').text
+        distributions = self.driver.find_element("css selector", '#mat-expansion-panel-header-0 > span.mat-content.ng-tns-c518-26 > div.summary-chip.targeting.ng-star-inserted > div').text
 
-        self.driver.find_element('css selector', 'button.mat-menu-trigger:nth-child(1)').click()
-        time.sleep(1)
-        self.driver.find_element('css selector', '.increase-distribution-button').click()
-
-        distribution = self.driver.find_element('css selector', 'input.ng-pristine').get_attribute('value')
+        # get distribution value
+        str_index = distributions.find("%")
+        distribution = distributions[1:str_index]
 
         return release_name, distribution
 
 
-    def firebaseAuto(self, prenu):
+    def firebaseAuto(self):
+        time.sleep(1)
+        self.driver.find_element('css selector', 'button.mat-menu-trigger:nth-child(1)').click()
+        self.driver.find_element('css selector', '.increase-distribution-button').click()
+
+        prenu = self.driver.find_element('css selector', 'input.ng-pristine').get_attribute('value')
+
         index = self.increases.index(int(prenu))
         nownu = self.increases[index+1]
 
@@ -246,7 +251,7 @@ if __name__ == '__main__':
                 print(text)
                 auto.send_message(text)
             else:
-                nownu = auto.firebaseAuto(distribution)
+                nownu = auto.firebaseAuto()
 
                 if int(nownu) == 100:
                     auto.jenkinsAuto()
@@ -274,7 +279,7 @@ if __name__ == '__main__':
                 print(text)
                 auto.send_message(text)
             else:
-                nownu = auto.firebaseAuto(distribution)
+                nownu = auto.firebaseAuto()
 
                 auto.driver.quit()
                 action = 'Increase phase stage.'
