@@ -46,7 +46,7 @@ class Automation(object):
 
         # init
         options = webdriver.FirefoxOptions()
-        # options.add_argument("-headless")  # Windowless mode
+        options.add_argument("-headless")  # Windowless mode
         options.set_preference('browser.link.open_newwindow', '3')
         options.set_preference('permissions.default.image', 2)  # no pictures mode
 
@@ -64,30 +64,23 @@ class Automation(object):
 
 
     def getFirebaseValues(self):
+        print("\n>>> Opening firebase website. ")
         self.driver.get(self.url)
 
-        self.wait.until(ec.presence_of_element_located(('css selector', 'div.summary-chip:nth-child(5) > div:nth-child(2)')))
+        self.wait.until(ec.presence_of_element_located(('css selector', 'button.mat-menu-trigger:nth-child(1)')))
 
         release_name = self.driver.find_element("css selector", '.fire-feature-bar-title').text
-        distribution = self.driver.find_element('css selector', 'div.summary-chip:nth-child(5) > div:nth-child(2)').text
 
+        time.sleep(1)
+        self.driver.find_element('css selector', 'button.mat-menu-trigger:nth-child(1)').click()
+        self.driver.find_element('css selector', '.increase-distribution-button').click()
+
+        distribution = self.driver.find_element('css selector', 'input.ng-pristine').get_attribute('value')
 
         return release_name, distribution
 
 
-    def firebaseAuto(self):
-        print("\n>>> Opening firebase website. ")
-        self.driver.get(self.url)
-
-        # waiting for loading complete
-        self.wait.until(ec.presence_of_element_located(('css selector', 'button.mat-menu-trigger:nth-child(1)')))
-
-        self.driver.find_element('css selector', 'button.mat-menu-trigger:nth-child(1)').click()
-        self.driver.find_element('css selector', '.increase-distribution-button').click()
-
-        # get last number and set present number
-        prenu = self.driver.find_element('css selector', 'input.ng-pristine').get_attribute('value')
-
+    def firebaseAuto(self, prenu):
         index = self.increases.index(int(prenu))
         nownu = self.increases[index+1]
 
@@ -114,36 +107,40 @@ class Automation(object):
         self.driver.find_element("css selector", 'div.formRow:nth-child(2) > input:nth-child(1)').send_keys(CONSTANTS.JENKINS_PASSWORD)
         self.driver.find_element("css selector", '.submit-button').click()
 
-        # auto stop
+        # auto-run stop/start
         self.wait.until(ec.presence_of_element_located(("css selector", '#cb32')))
         self.driver.find_element("css selector", '#cb32').send_keys(Keys.SPACE)
         time.sleep(2)
 
         # set default value
         if auto_run == "true" and terminate == "false":
+            # enter run time
             self.driver.find_element("css selector", 'div.config_general:nth-child(11) > div:nth-child(4) > div:nth-child(4) > div:nth-child(1) > div:nth-child(2) > textarea:nth-child(1)').send_keys("0 9 * * *")
 
+            # change default url
             selector1 = self.driver.find_element("css selector", 'div.repeated-chunk:nth-child(2) > div:nth-child(1) > div:nth-child(4) > div:nth-child(2) > input:nth-child(1)')
             selector1.clear()
             selector1.send_keys(self.url)
 
             time.sleep(1)
+            # change jenkins job status
             selector2 = self.driver.find_element("css selector", 'div.hetero-list-container:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(4) > div:nth-child(2) > textarea:nth-child(1)')
             selector2.clear()
             selector2.send_keys("Running")
         elif terminate == "true":
-            time.sleep(1)
+            # cahnge jenkins job status
             selector1 = self.driver.find_element("css selector", 'div.hetero-list-container:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(4) > div:nth-child(2) > textarea:nth-child(1)')
             selector1.clear()
             selector1.send_keys("Stopped")
 
         # save
+        time.sleep(1)
         self.driver.find_element("xpath", "//button[text()='Save' and @type='button']").click()
         self.wait.until_not(ec.presence_of_element_located(("xpath", "//button[text()='Save' and @type='button']")))
 
 
-    def text(self, today, action, release_name, distribution, url):
-        text = '''Date: {}\nAction: {}\nRelease: {}\nCurrent Stage: {}\nURL: {}'''.format(today, action, release_name, distribution, url)
+    def text(self, action, release_name, distribution, url):
+        text = '''Date: {}\nAction: {}\nRelease: {}\nCurrent Stage: {}\nURL: {}'''.format(self.today, action, release_name, distribution, url)
 
         return text
 
@@ -193,7 +190,7 @@ class Automation(object):
         today_work = is_workday(date_now)
         tomorrow_work = is_workday(tomorrow)
 
-        return today_work,tomorrow_work
+        return today_work, tomorrow_work
 
 
 if __name__ == '__main__':
@@ -207,67 +204,89 @@ if __name__ == '__main__':
     release_name, distribution = auto.getFirebaseValues()
 
     if auto_run == "true" and terminate == "false" and auto_status == "Stopped":
-        auto.jenkinsAuto()  # main
-        auto.driver.quit()
+        if int(distribution) == 100:
+            action = '"Increase distribution" had already updated to 100%. Auto-run start faild.'
+            text = auto.text(action, release_name, distribution, auto.url)
 
-        action = "Auto-run mode started."
-        text = auto.text(auto.today, action, release_name, distribution, auto.url)
+            print(text)
+            auto.send_message(text)
+        elif int(distribution) not in [1, 2, 5, 10, 20, 50]:
+            action = '"Increase distribution"({}) is not in [1%, 2%, 5%, 10%, 20%, 50%]. Auto-run start faild.'.format(distribution)
+            text = auto.text(action, release_name, distribution, auto.url)
 
-        print(text)
-        auto.send_message(text)
+            print(text)
+            auto.send_message(text)
+        else:
+            auto.jenkinsAuto()  # main
+            auto.driver.quit()
+
+            action = "Auto-run mode started."
+            text = auto.text(action, release_name, distribution, auto.url)
+
+            print(text)
+            auto.send_message(text)
 
     elif terminate == "true" and auto_status == "Running":
         auto.jenkinsAuto()  # main
         auto.driver.quit()
 
         action = "Auto-run mode stopped, because of manual termination."
-        text = auto.text(auto.today, action, release_name, distribution, auto.url)
+        text = auto.text(action, release_name, distribution, auto.url)
 
         print(text)
         auto.send_message(text)
         
     elif auto_run == "false" and terminate == "false":
-        if today_work:
+        if today_work and auto_status == "Running":
             if int(distribution) == 50 and tomorrow_work == False:
                 auto.driver.quit()
                 action = "Today is last workday, not updating to 100%."
-                text = auto.text(auto.today, action, release_name, distribution, auto.url)
-
-                print(text)
-                auto.send_message(text)
-            elif int(distribution) == 100:
-                auto.jenkinsAuto()
-                auto.driver.quit()
-
-                action = "Increase distribution had already been update to 100%. Stopped auto-run."
-                text = auto.text(auto.today, action, release_name, distribution, auto.url)
+                text = auto.text(action, release_name, distribution, auto.url)
 
                 print(text)
                 auto.send_message(text)
             else:
-                nownu = auto.firebaseAuto()
+                nownu = auto.firebaseAuto(distribution)
 
                 if int(nownu) == 100:
                     auto.jenkinsAuto()
                     auto.driver.quit()
 
-                    action = '"Increase distribution" update to 100%. And auto-run mode stopped.'
-                    text = auto.text(auto.today, action, release_name, 100, auto.url)
+                    action = 'Auto-run mode stopped. "Increase distribution" update to 100% today.'
+                    text = auto.text(action, release_name, 100, auto.url)
 
                     print(text)
                     auto.send_message(text)
                 else:
                     auto.driver.quit()
                     action = 'Increase phase stage.'
-                    text = auto.text(auto.today, action, release_name, nownu, auto.url)
+                    text = auto.text(action, release_name, nownu, auto.url)
 
                     print(text)
                     auto.send_message(text)
+        elif auto_status == "Stopped":
+            if int(distribution) == 100:
+                auto.driver.quit()
+
+                action = '"Increase distribution" had already updated to 100%. Manual execution failed.'
+                text = auto.text(action, release_name, distribution, auto.url)
+
+                print(text)
+                auto.send_message(text)
+            else:
+                nownu = auto.firebaseAuto(distribution)
+
+                auto.driver.quit()
+                action = 'Increase phase stage.'
+                text = auto.text(action, release_name, nownu, auto.url)
+
+                print(text)
+                auto.send_message(text)
         else:
             print("\nToday({}) is holiday or last workday, not running automation.".format(auto.today))
     else:
         print("Illegal operation, please check the status of the Jenkins job.\nJenkins auto_run status : ", auto_status)
-        text = "Illegal operation, please check the status of the Jenkins job.\nJenkins auto_run status : {}".format(auto_status)
+        text = "Action: Illegal operation, please check the status of the Jenkins job.\nJenkins job status: {}".format(auto_status)
         auto.send_message(text)
 
 
