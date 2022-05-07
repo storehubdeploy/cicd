@@ -74,7 +74,9 @@ class Automation(object):
 
         # get distribution value
         str_index = distributions.find("%")
-        distribution = distributions[1:str_index]
+        distribution = distributions[0:str_index].strip()
+
+        print(release_name, distribution)
 
         return release_name, distribution
 
