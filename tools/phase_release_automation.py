@@ -71,8 +71,8 @@ class Automation(object):
 
         release_name = self.driver.find_element("css selector", '.fire-feature-bar-title').text
 
-        time.sleep(1)
         self.driver.find_element('css selector', 'button.mat-menu-trigger:nth-child(1)').click()
+        self.wait.until(ec.presence_of_element_located(('css selector', '.increase-distribution-button')))
         self.driver.find_element('css selector', '.increase-distribution-button').click()
 
         distribution = self.driver.find_element('css selector', 'input.ng-pristine').get_attribute('value')
