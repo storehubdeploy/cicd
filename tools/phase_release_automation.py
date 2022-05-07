@@ -70,7 +70,7 @@ class Automation(object):
         self.wait.until(ec.presence_of_element_located(('css selector', '.fire-feature-bar-title')))
 
         release_name = self.driver.find_element("css selector", '.fire-feature-bar-title').text
-        distributions = self.driver.find_element("css selector", '#mat-expansion-panel-header-0 > span.mat-content.ng-tns-c518-26 > div.summary-chip.targeting.ng-star-inserted > div').text
+        distributions = self.driver.find_element("css selector", 'div.summary-chip:nth-child(5) > div:nth-child(2)').text
 
         # get distribution value
         str_index = distributions.find("%")
