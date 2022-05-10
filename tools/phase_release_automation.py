@@ -69,18 +69,20 @@ class Automation(object):
 
         try:
             # self.wait.until(ec.presence_of_element_located(('css selector', 'div.summary-chip:nth-child(5) > div:nth-child(2)')))
-            time.sleep(5)
+            time.sleep(8)
             release_name = self.driver.find_element("css selector", '.fire-feature-bar-title').text
             distributions = self.driver.find_element("css selector", 'div.summary-chip:nth-child(5) > div:nth-child(2)').text
         except:
             self.wait.until(ec.presence_of_element_located(('css selector', '.VfPpkd-RLmnJb')))
             self.driver.find_element("css selector", '.VfPpkd-LgbsSe').click()
             time.sleep(2)
-            self.driver.find_element("css selector", '#password > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > input:nth-child(1)').send_keys("96154201y6", Keys.ENTER)
+            self.driver.find_element("css selector", '#password > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > input:nth-child(1)').send_keys(CONSTANTS.GOOGLE_PWD, Keys.ENTER)
             self.wait.until(ec.presence_of_element_located(('css selector', 'div.summary-chip:nth-child(5) > div:nth-child(2)')))
 
             release_name = self.driver.find_element("css selector", '.fire-feature-bar-title').text
             distributions = self.driver.find_element("css selector", 'div.summary-chip:nth-child(5) > div:nth-child(2)').text
+
+            print("==> Login has expired, this will not affect the normal release, but please update in time！！")
 
         # get distribution value
         str_index = distributions.find("%")
@@ -300,8 +302,10 @@ if __name__ == '__main__':
                 print(text)
                 auto.send_message(text)
         else:
+            auto.driver.quit()
             print("\nToday({}) is holiday or last workday, not running automation.".format(auto.today))
     else:
+        auto.driver.quit()
         print("Illegal operation, please check the status of the Jenkins job.\nJenkins auto_run status : ", auto_status)
         text = "Action: Illegal operation, please check the status of the Jenkins job.\nJenkins job status: {}".format(auto_status)
         auto.send_message(text)
