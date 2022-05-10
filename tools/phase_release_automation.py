@@ -23,7 +23,7 @@ class Automation(object):
         self.recipient = self.getApolloConfig()
 
         self.driver = Automation.firefoxDriver(self)
-        self.wait = WebDriverWait(self.driver, 150)
+        self.wait = WebDriverWait(self.driver, 60)
 
 
     def getApolloConfig(self):
@@ -67,16 +67,26 @@ class Automation(object):
         print("\n>>> Opening firebase website. ")
         self.driver.get(self.url)
 
-        self.wait.until(ec.presence_of_element_located(('css selector', 'div.summary-chip:nth-child(5) > div:nth-child(2)')))
+        try:
+            # self.wait.until(ec.presence_of_element_located(('css selector', 'div.summary-chip:nth-child(5) > div:nth-child(2)')))
+            time.sleep(5)
+            release_name = self.driver.find_element("css selector", '.fire-feature-bar-title').text
+            distributions = self.driver.find_element("css selector", 'div.summary-chip:nth-child(5) > div:nth-child(2)').text
+        except:
+            self.wait.until(ec.presence_of_element_located(('css selector', '.VfPpkd-RLmnJb')))
+            self.driver.find_element("css selector", '.VfPpkd-RLmnJb').click()
+            time.sleep(2)
+            self.driver.find_element("css selector", '#password > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > input:nth-child(1)').send_keys("96154201y6", Keys.ENTER)
+            self.wait.until(ec.presence_of_element_located(('css selector', 'div.summary-chip:nth-child(5) > div:nth-child(2)')))
 
-        release_name = self.driver.find_element("css selector", '.fire-feature-bar-title').text
-        distributions = self.driver.find_element("css selector", 'div.summary-chip:nth-child(5) > div:nth-child(2)').text
+            release_name = self.driver.find_element("css selector", '.fire-feature-bar-title').text
+            distributions = self.driver.find_element("css selector", 'div.summary-chip:nth-child(5) > div:nth-child(2)').text
 
         # get distribution value
         str_index = distributions.find("%")
         distribution = distributions[0:str_index].strip()
 
-        print(release_name, distribution)
+        # print(release_name, distribution)
 
         return release_name, distribution
 
