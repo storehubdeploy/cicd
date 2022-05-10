@@ -74,7 +74,7 @@ class Automation(object):
             distributions = self.driver.find_element("css selector", 'div.summary-chip:nth-child(5) > div:nth-child(2)').text
         except:
             self.wait.until(ec.presence_of_element_located(('css selector', '.VfPpkd-RLmnJb')))
-            self.driver.find_element("css selector", '.VfPpkd-RLmnJb').click()
+            self.driver.find_element("css selector", '.VfPpkd-LgbsSe').click()
             time.sleep(2)
             self.driver.find_element("css selector", '#password > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > input:nth-child(1)').send_keys("96154201y6", Keys.ENTER)
             self.wait.until(ec.presence_of_element_located(('css selector', 'div.summary-chip:nth-child(5) > div:nth-child(2)')))
