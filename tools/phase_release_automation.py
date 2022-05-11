@@ -146,8 +146,8 @@ class Automation(object):
             selector2 = self.driver.find_element("css selector", 'div.hetero-list-container:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(4) > div:nth-child(2) > textarea:nth-child(1)')
             selector2.clear()
             selector2.send_keys("Running")
-        elif terminate == "true":
-            # cahnge jenkins job status
+        elif terminate == "true" or nownu == 100:
+            # change jenkins job status
             selector1 = self.driver.find_element("css selector", 'div.hetero-list-container:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(4) > div:nth-child(2) > textarea:nth-child(1)')
             selector1.clear()
             selector1.send_keys("Stopped")
