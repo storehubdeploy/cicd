@@ -165,35 +165,34 @@ class Automation(object):
 
 
     def send_message(self,text):
-        print(">>> send message")
-        # if 't_' in self.recipient:
-        #     thread_type = "thread_key"
-        # else:
-        #     thread_type = "id"
-        #
-        # data = {
-        #     "recipient": {thread_type: self.recipient},
-        #     "message": {
-        #         "text": text,
-        #     },
-        # }
-        #
-        # post_data = json.dumps(data)
-        # url = CONSTANTS.WORKPLACE_URL
-        # headers = {'Content-Type': 'application/json'}
-        # payload = {'access_token': CONSTANTS.WORKPLACE_TOKEN}
-        #
-        # try:
-        #     r = requests.post(url, headers=headers, params=payload, data=post_data)
-        #     r.raise_for_status()
-        #     print("\n>>> Message sent success! ")
-        # except requests.RequestException as e:
-        #     print('recipient:' + self.recipient)
-        #     print('text:' + text)
-        #     print(str(e))
-        #     return e
-        # else:
-        #     return r.json()
+        if 't_' in self.recipient:
+            thread_type = "thread_key"
+        else:
+            thread_type = "id"
+
+        data = {
+            "recipient": {thread_type: self.recipient},
+            "message": {
+                "text": text,
+            },
+        }
+
+        post_data = json.dumps(data)
+        url = CONSTANTS.WORKPLACE_URL
+        headers = {'Content-Type': 'application/json'}
+        payload = {'access_token': CONSTANTS.WORKPLACE_TOKEN}
+
+        try:
+            r = requests.post(url, headers=headers, params=payload, data=post_data)
+            r.raise_for_status()
+            print("\n>>> Message sent success! ")
+        except requests.RequestException as e:
+            print('recipient:' + self.recipient)
+            print('text:' + text)
+            print(str(e))
+            return e
+        else:
+            return r.json()
 
 
     def dateJudgement(self):
