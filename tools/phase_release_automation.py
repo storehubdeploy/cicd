@@ -32,13 +32,17 @@ class Automation(object):
         cluster = "default"
         namespace = "application"
 
-        r = requests.get("{0}/configfiles/json/{1}/{2}/{3}".format(url, appid, cluster, namespace))
-        if r.status_code == 200:
-            for k, v in r.json().items():
-                if k == "PHASE_RELEASE_GROUP":
-                    return v
-                else:
-                    print("\n>>> Can not get workplace 'PHASE_RELEASE_GROUP'. ")
+        try:
+            r = requests.get("{0}/configfiles/json/{1}/{2}/{3}".format(url, appid, cluster, namespace))
+            if r.status_code == 200:
+                for k, v in r.json().items():
+                    if k == "PHASE_RELEASE_GROUP":
+                        return v
+                    else:
+                        print("\n>>> Can not get workplace 'PHASE_RELEASE_GROUP'. ")
+        except:
+            # Guaranteed to run successfully, resolve apollo outages
+            return "t_5021833814548561"
 
 
     def firefoxDriver(self):
