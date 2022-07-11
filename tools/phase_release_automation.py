@@ -258,9 +258,9 @@ if __name__ == '__main__':
 
         print(text)
         auto.send_message(text)
-        
+
     elif auto_run == "false" and terminate == "false":
-        if today_work and auto_status == "Running":
+        if today_work and auto_status == "Running": # auto or manual run once
             if int(distribution) == 50 and tomorrow_work == False:
                 auto.driver.quit()
                 action = "Today is last workday, not updating to 100%."
@@ -287,7 +287,7 @@ if __name__ == '__main__':
 
                     print(text)
                     auto.send_message(text)
-        elif auto_status == "Stopped":
+        elif auto_status == "Stopped": # manual run once
             if int(distribution) == 100:
                 auto.driver.quit()
 
@@ -300,18 +300,18 @@ if __name__ == '__main__':
                 nownu = auto.firebaseAuto()
 
                 auto.driver.quit()
-                action = 'Increase phase stage.'
+                action = 'Increase phase stage by manual update.'
                 text = auto.text(action, release_name, nownu, auto.url)
 
                 print(text)
                 auto.send_message(text)
         else:
             auto.driver.quit()
-            print("\nToday({}) is holiday or last workday, not running automation.".format(auto.today))
+            print("\nToday({}) is holiday or last workday, not running automation. \nCurrent Stage: {}%".format(auto.today, distribution))
     else:
         auto.driver.quit()
         print("Illegal operation, please check the status of the Jenkins job.\nJenkins auto_run status : ", auto_status)
-        text = "Action: Illegal operation, please check the status of the Jenkins job.\nJenkins job status: {}".format(auto_status)
+        text = "Action: Illegal operation, please check the status of the Jenkins job.\nJenkins job status: {} \nCurrent Stage: {}%".format(auto_status, distribution)
         auto.send_message(text)
 
 
