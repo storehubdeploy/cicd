@@ -74,7 +74,9 @@ class Automation(object):
         try:
             # self.wait.until(ec.presence_of_element_located(('css selector', 'div.summary-chip:nth-child(5) > div:nth-child(2)')))
             time.sleep(8)
-            release_name = self.driver.find_element("css selector", '.fire-feature-bar-title').text
+            release_name = self.driver.find_element("css selector", '.fire-feature-bar-title')
+
+            self.wait.until(ec.presence_of_element_located(('css selector', 'div.summary-chip:nth-child(5) > div:nth-child(2)')))
             distributions = self.driver.find_element("css selector", 'div.summary-chip:nth-child(5) > div:nth-child(2)').text
         except:
             self.wait.until(ec.presence_of_element_located(('css selector', '.VfPpkd-RLmnJb')))
