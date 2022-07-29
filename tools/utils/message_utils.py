@@ -37,20 +37,20 @@ def send_message(recipient, text):
 
 
 def format_message(
-        status=" ",
-        app=" ",
-        source_branch=" ",
-        target_branch=" ",
-        commit_info=" ",
-        version_number=" ",
-        versionCode=" ",
-        pgy_url=" ",
-        report_url=" ",
-        build_url=" ",
-        s3_url=" ",
-        jira_site=" ",
-        assignee=" ",
-        summary=" ",
+    status=" ",
+    app=" ",
+    source_branch=" ",
+    target_branch=" ",
+    commit_info=" ",
+    version_number=" ",
+    versionCode=" ",
+    pgy_url=" ",
+    report_url=" ",
+    build_url=" ",
+    s3_url=" ",
+    jira_site=" ",
+    assignee=" ",
+    summary=" ",
 ):
     if status == 'success':
         status = emoji.emojize(':sparkles: Success')
