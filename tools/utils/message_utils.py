@@ -37,51 +37,62 @@ def send_message(recipient, text):
 
 
 def format_message(
-    job_name='',
-    jira_site='',
-    source_branch='',
-    target_branch='',
-    status='',
-    version_number='',
-    versionCode='',
-    pgy_url='',
-    git_commit='',
-    commit_info='',
-    report_url='',
-    build_url='',
-    assignee='',
-    summary='',
+    status=" ",
+    app=" ",
+    source_branch=" ",
+    target_branch=" ",
+    commit_info=" ",
+    version_number=" ",
+    versionCode=" ",
+    pgy_url=" ",
+    report_url=" ",
+    build_url=" ",
+    s3_url=" ",
+    jira_site=" ",
+    assignee=" ",
+    summary=" ",
 ):
     if status == 'success':
-        status = emoji.emojize(':sparkles::sparkles::sparkles::sparkles: success :grinning_face::grinning_face::grinning_face::grinning_face:')
-    else:
-        status = emoji.emojize(':smiling_face_with_horns::smiling_face_with_horns::smiling_face_with_horns::smiling_face_with_horns: failed :ghost::ghost::ghost::ghost::ghost:')
-
-    if jira_site == '':
+        status = emoji.emojize(':sparkles: Success')
         text = (
-            "App JOB_NAME: {}\n\n".format(job_name)
+            "Project: {}\n\n".format(app)
             + "Status: {}\n\n".format(status)
-            + "Source Branch: {}\n\n".format(source_branch)
-            + "Target Branch: {}\n\n".format(target_branch)
-            + "Build: {}_{}\n\n".format(version_number, versionCode)
+            + "Jira_Ticket: {}/{}\n\n".format(jira_site, source_branch)
+            + "Pull_Request: {} -> {}\n\n".format(source_branch, target_branch)
             + "APP_URL: {}\n\n".format(pgy_url)
-            + "Revison: {} {}\n\n".format(git_commit, commit_info)
-            + "REPORT_URL: {}\n\n".format(report_url)
-            + "BUILD_URL: {}\n\n".format(build_url)
-        )
-    else:
-        text = (
-            "App JOB_NAME: {}\n\n".format(job_name)
-            + "Title: {}\n\n".format(summary)
-            + "Ticket: {}/{}\n\n".format(jira_site, source_branch)
-            + "Status: {}\n\n".format(status)
-            + "Source Branch: {}\n\n".format(source_branch)
-            + "Target Branch: {}\n\n".format(target_branch)
-            + "Build: {}_{}\n\n".format(version_number, versionCode)
-            + "APP_URL: {}\n\n".format(pgy_url)
-            + "Revison: {} {}\n\n".format(git_commit, commit_info)
-            + "REPORT_URL: {}\n\n".format(report_url)
-            + "BUILD_URL: {}\n\n".format(build_url)
+            + "S3_URL: {}\n\n".format(s3_url)
             + "Assignee: {}\n\n".format(assignee)
         )
+    else:
+        message = status
+        status = emoji.emojize(':smiling_face_with_horns: Failed!')
+
+        if jira_site == '':
+            text = (
+                "Project: {}\n\n".format(app)
+                + "Status: {}\n\n".format(status)
+                + "Error_Message: {}\n\n".format(message)
+                + "Build_Version: {}_{}\n\n".format(version_number, versionCode)
+                + "Pull_Request: {} -> {}\n\n".format(source_branch, target_branch)
+                + "Commit_Info: {}\n\n".format(commit_info)
+                + "Jenkins_URL: {}\n\n".format(build_url)
+                + "Report_URL: {}\n\n".format(report_url)
+                + "S3_URL: {}\n\n".format(s3_url)
+                + "Assignee: {}\n\n".format(assignee)
+            )
+        else:
+            text = (
+                "Project: {}\n\n".format(app)
+                + "Status: {}\n\n".format(status)
+                + "Error_Message: {}\n\n".format(message)
+                + "Build_Version: {}_{}\n\n".format(version_number, versionCode)
+                + "Pull_Request: {} -> {}\n\n".format(source_branch, target_branch)
+                + "Commit_Info: {}\n\n".format(commit_info)
+                + "Jira_Title: {}\n\n".format(summary)
+                + "Jira_Ticket: {}/{}\n\n".format(jira_site, source_branch)
+                + "Jenkins_URL: {}\n\n".format(build_url)
+                + "Report_URL: {}\n\n".format(report_url)
+                + "S3_URL: {}\n\n".format(s3_url)
+                + "Assignee: {}\n\n".format(assignee)
+            )
     return text
