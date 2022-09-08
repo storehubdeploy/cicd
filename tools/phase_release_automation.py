@@ -10,7 +10,9 @@ import requests
 from chinese_calendar import is_workday
 from selenium import webdriver
 from selenium.webdriver import DesiredCapabilities, Keys
+from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
+from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.wait import WebDriverWait
 import ci_constants as CONSTANTS
 
@@ -72,9 +74,14 @@ class Automation(object):
         self.driver.get(self.url)
 
         try:
-            # self.wait.until(ec.presence_of_element_located(('css selector', 'div.summary-chip:nth-child(5) > div:nth-child(2)')))
-            time.sleep(8)
-            release_name = self.driver.find_element("css selector", '.fire-feature-bar-title').text
+            self.wait.until(ec.presence_of_element_located(('xpath', '//fire-feature-bar-title/h2')))
+            time.sleep(2)
+
+            release_name = ""
+            while release_name == "":
+                release_name = self.driver.find_element("xpath", '//fire-feature-bar-title/h2').text
+                release_name = release_name.replace(" ", "")
+                time.sleep(2)
 
             self.wait.until(ec.presence_of_element_located(('css selector', 'div.summary-chip:nth-child(5) > div:nth-child(2)')))
             distributions = self.driver.find_element("css selector", 'div.summary-chip:nth-child(5) > div:nth-child(2)').text
@@ -83,12 +90,19 @@ class Automation(object):
             self.driver.find_element("css selector", '.VfPpkd-LgbsSe').click()
             time.sleep(2)
             self.driver.find_element("css selector", '#password > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > input:nth-child(1)').send_keys(CONSTANTS.GOOGLE_PWD, Keys.ENTER)
-            self.wait.until(ec.presence_of_element_located(('css selector', 'div.summary-chip:nth-child(5) > div:nth-child(2)')))
 
-            release_name = self.driver.find_element("css selector", '.fire-feature-bar-title').text
+            self.wait.until(ec.presence_of_element_located(('css selector', 'div.summary-chip:nth-child(5) > div:nth-child(2)')))
+            time.sleep(2)
+
+            release_name = ""
+            while release_name == "":
+                release_name = self.driver.find_element("xpath", '//fire-feature-bar-title/h2').text
+                release_name = release_name.replace(" ", "")
+                time.sleep(2)
+
             distributions = self.driver.find_element("css selector", 'div.summary-chip:nth-child(5) > div:nth-child(2)').text
 
-            print("==> Login has expired, this will not affect the normal release, but please update in time！！")
+            print("\n==> Login has expired, this will not affect the normal release, but please update in time！！")
 
         # get distribution value
         str_index = distributions.find("%")
@@ -122,8 +136,90 @@ class Automation(object):
         return nownu
 
 
+    def firebaseAutoClose(self):
+        time.sleep(1)
+        print("\n>>> Closing phease release...\n")
+        self.wait.until(ec.presence_of_element_located(('css selector', 'button.mat-menu-trigger:nth-child(1)')))
+        # click rollout button
+        self.driver.find_element('css selector', 'button.mat-menu-trigger:nth-child(1)').click()
+        self.driver.find_element('css selector', '.rollout-button').click()
+
+        # change start
+        self.driver.find_element('xpath', '//fire-dialog//mat-select').click()
+        time.sleep(1)
+
+        self.driver.find_element('xpath', '//mat-option/span[text()=" Variant A "]').click()
+
+        # change condition name
+        condition= self.driver.find_element('css selector', '.editable-value-input')
+        condition.clear()
+        condition.send_keys(release_name)
+        time.sleep(2)
+
+        ## 获取AB testing更新的参数
+        table_tr_list = self.driver.find_elements('xpath', '//rc-rollout-dialog//table/tr')[1:]
+        table_list = []
+
+        for tr in table_tr_list:
+            row_list = []
+            table_td_list = tr.find_elements(By.TAG_NAME, "td")
+            for td in table_td_list:
+                row_list.append(td.text)
+
+            table_list.append(row_list)
+        ##
+
+        self.driver.find_element('css selector', 'button.mat-raised-button:nth-child(2)').click()
+
+        # get all changes
+        for i in range(len(table_list)):
+            key = table_list[i][0]
+            value = table_list[i][1]
+            print(key,value)
+
+            self.wait.until(ec.presence_of_element_located(('xpath', '//div[text()="{}"]'.format(key))))
+            time.sleep(2)
+
+            self.driver.find_element('xpath', '//div[text()="{}"]/../../../../../r10g-parameter-actions//button[@mattooltip="Edit"]'.format(key)).click()
+            time.sleep(2)
+            self.driver.find_element('xpath', '//label[text()="Default value"]/../../div/input').clear()
+            self.driver.find_element('xpath', '//label[text()="Default value"]/../../div/input').send_keys(value)
+
+            # close other conditions
+            button_list = self.driver.find_elements('xpath', '//div[@class="editor"]//button[@mattooltip="Delete"]')[1:]
+            for button in button_list:
+                time.sleep(1)
+                button.click()
+
+            time.sleep(2)
+            self.driver.find_element('css selector', '.form > div:nth-child(2) > div:nth-child(3) > button:nth-child(2)').click()
+
+        # publish
+        time.sleep(2)
+        self.driver.find_element('css selector', '.publish').click()
+        self.wait.until(ec.presence_of_element_located(('css selector', '.mat-secondary')))
+
+        self.driver.find_element('css selector', '.fire-dialog-actions > button:nth-child(2)').click()
+        self.wait.until_not(ec.presence_of_element_located(('css selector', '.fire-dialog-actions > button:nth-child(2)')))
+
+        # stop phease release ticket
+        time.sleep(2)
+        self.driver.get(self.url)
+
+        self.wait.until(ec.presence_of_element_located(('css selector', 'button.mat-menu-trigger:nth-child(1)')))
+        self.driver.find_element('css selector', 'button.mat-menu-trigger:nth-child(1)').click()
+        time.sleep(1)
+        self.driver.find_element('css selector', '.stop-button').click()
+
+        self.wait.until(ec.presence_of_element_located(('css selector', 'button.mat-raised-button:nth-child(2) > span:nth-child(1)')))
+        self.driver.find_element('css selector', 'button.mat-raised-button:nth-child(2) > span:nth-child(1)').click()
+        time.sleep(2)
+
+
+
     def jenkinsAuto(self):
         print("\n>>> Opening jenkins website. ")
+        time.sleep(2)
         self.driver.get('https://jenkins.shub.us/job/mobile/job/Android/job/RN-POS_Phase_Release_Automation/configure')
 
         # start opration
@@ -274,10 +370,18 @@ if __name__ == '__main__':
                 nownu = auto.firebaseAuto()
 
                 if int(nownu) == 100:
+                    try:
+                        auto.firebaseAutoClose()
+                        print("\n>>> Phease release closed success!")
+                        note = "Phease release closed success!"
+                    except:
+                        print("\n>>> Phease release closed failed!")
+                        note = "Phease release closed failed!"
+
                     auto.jenkinsAuto()
                     auto.driver.quit()
 
-                    action = 'Auto-run mode stopped. "Increase distribution" update to 100% today.'
+                    action = 'Updated to 100% today. Auto-run mode stopped. {}'.format(note)
                     text = auto.text(action, release_name, 100, auto.url)
 
                     print(text)
@@ -293,7 +397,7 @@ if __name__ == '__main__':
             if int(distribution) == 100:
                 auto.driver.quit()
 
-                action = '"Increase distribution" had already updated to 100%. Manual execution failed.'
+                action = 'Already updated to 100% before. Manual execution failed.'
                 text = auto.text(action, release_name, distribution, auto.url)
 
                 print(text)
@@ -301,9 +405,22 @@ if __name__ == '__main__':
             else:
                 nownu = auto.firebaseAuto()
 
-                auto.driver.quit()
-                action = 'Increase phase stage by manual update.'
-                text = auto.text(action, release_name, nownu, auto.url)
+                if nownu != 100:
+                    auto.driver.quit()
+                    action = 'Increase phase stage by manual update.'
+                    text = auto.text(action, release_name, nownu, auto.url)
+                else:
+                    try:
+                        auto.firebaseAutoClose()
+                        print("\n>>> Phease release closed success!")
+                        note = "Phease release closed success!"
+                    except:
+                        print("\n>>> Phease release closed failed!")
+                        note = "Phease release closed failed!"
+
+                    action = 'Updated to 100% by manual today. {}'.format(note)
+                    text = auto.text(action, release_name, nownu, auto.url)
+                    auto.driver.quit()
 
                 print(text)
                 auto.send_message(text)
@@ -315,6 +432,3 @@ if __name__ == '__main__':
         print("Illegal operation, please check the status of the Jenkins job.\nJenkins auto_run status : ", auto_status)
         text = "Action: Illegal operation, please check the status of the Jenkins job.\nJenkins job status: {} \nCurrent Stage: {}%".format(auto_status, distribution)
         auto.send_message(text)
-
-
-
