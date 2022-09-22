@@ -138,7 +138,7 @@ class Automation(object):
 
     def firebaseAutoClose(self):
         time.sleep(1)
-        print("\n>>> Closing phease release...\n")
+        print("\n>>> Closing phase release...\n")
         self.wait.until(ec.presence_of_element_located(('css selector', 'button.mat-menu-trigger:nth-child(1)')))
         # click rollout button
         self.driver.find_element('css selector', 'button.mat-menu-trigger:nth-child(1)').click()
@@ -202,7 +202,7 @@ class Automation(object):
         self.driver.find_element('css selector', '.fire-dialog-actions > button:nth-child(2)').click()
         self.wait.until_not(ec.presence_of_element_located(('css selector', '.fire-dialog-actions > button:nth-child(2)')))
 
-        # stop phease release ticket
+        # stop phase release ticket
         time.sleep(2)
         self.driver.get(self.url)
 
@@ -372,11 +372,11 @@ if __name__ == '__main__':
                 if int(nownu) == 100:
                     try:
                         auto.firebaseAutoClose()
-                        print("\n>>> Phease release closed success!")
-                        note = "Phease release closed success!"
+                        print("\n>>> Phase release closed success!")
+                        note = "Phase release closed success!"
                     except:
-                        print("\n>>> Phease release closed failed!")
-                        note = "Phease release closed failed!"
+                        print("\n>>> Phase release closed failed!")
+                        note = "Phase release closed failed!"
 
                     auto.jenkinsAuto()
                     auto.driver.quit()
@@ -412,11 +412,11 @@ if __name__ == '__main__':
                 else:
                     try:
                         auto.firebaseAutoClose()
-                        print("\n>>> Phease release closed success!")
-                        note = "Phease release closed success!"
+                        print("\n>>> Phase release closed success!")
+                        note = "Phase release closed success!"
                     except:
-                        print("\n>>> Phease release closed failed!")
-                        note = "Phease release closed failed!"
+                        print("\n>>> Phase release closed failed!")
+                        note = "Phase release closed failed!"
 
                     action = 'Updated to 100% by manual today. {}'.format(note)
                     text = auto.text(action, release_name, nownu, auto.url)
