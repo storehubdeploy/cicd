@@ -28,7 +28,7 @@ class Automation(object):
         self.driver = Automation.firefoxDriver(self)
 
         # 设置超时时间
-        self.wait = WebDriverWait(self.driver, 10)
+        self.wait = WebDriverWait(self.driver, 40)
 
 
     def getApolloConfig(self):
@@ -80,7 +80,6 @@ class Automation(object):
         except:
             self.wait.until(ec.presence_of_element_located(("xpath", "//span[contains(@class, 'VfPpkd') and text()='Next']")))
 
-            # self.driver.find_element("css selector", '#identifierId').send_keys("fe.devops@storehub.com") # can delete
             self.driver.find_element("xpath", "//span[contains(@class, 'VfPpkd') and text()='Next']").click()
             time.sleep(2)
             self.driver.find_element("css selector", '#password > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > input:nth-child(1)').send_keys(CONSTANTS.GOOGLE_PWD, Keys.ENTER)
@@ -91,6 +90,7 @@ class Automation(object):
 
         stage_note = self.driver.find_element("css selector", "simple-html.text-line:nth-child(2) > span:nth-child(1)").text
         release_name = self.driver.find_element("css selector", ".page-header > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > simple-html:nth-child(1) > span:nth-child(1)").text
+        time.sleep(3)
         if stage_note == "Available on Google Play":
             current_stage = "100%"
         else:
@@ -109,7 +109,8 @@ class Automation(object):
         stage.send_keys(new_stage)
 
         time.sleep(3)
-        self.driver.find_element("xpath", "//material-button[@debug-id='cancel-button']").click() # change！！！
+        #self.driver.find_element("xpath", "//material-button[@debug-id='cancel-button']").click()  # change！！！
+        self.driver.find_element("xpath", "//material-button[@debug-id='confirm-button']").click() # Commit Change
 
         time.sleep(2)
         if new_stage == 100:
@@ -140,7 +141,7 @@ class Automation(object):
 
         if self.auto_run == "true":
             # autorun time
-            self.driver.find_element("css selector", 'div.config_general:nth-child(11) > div:nth-child(4) > div:nth-child(4) > div:nth-child(1) > div:nth-child(2) > textarea:nth-child(1)').send_keys("0 9 * * *")
+            self.driver.find_element("css selector", 'div.config_general:nth-child(11) > div:nth-child(4) > div:nth-child(4) > div:nth-child(1) > div:nth-child(2) > textarea:nth-child(1)').send_keys("10 9 * * *")
 
             # change default url
             selector1 = self.driver.find_element("css selector", 'div.repeated-chunk:nth-child(2) > div:nth-child(1) > div:nth-child(4) > div:nth-child(2) > input:nth-child(1)')

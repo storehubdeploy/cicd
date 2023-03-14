@@ -13,16 +13,16 @@ if __name__ == '__main__':
     auto_status = sys.argv[4]
 
     # ENV
-    driver_path = "" # Enter the driver path
-    login_cookie = "" # Enter the cookie path
-    jenkins_url = "https://jenkins.shub.us/job/mobile/job/Android/job/Beep_Phase_Release_Automation/configure" # Change the jenkins job url, if need.
+    driver_path = "/Users/shbuild/jenkins/workspace/mobile/Android/RN-POS_Phase_Release_Automation/geckodriver"
+    login_cookie = "/Users/shbuild/Library/Application Support/Firefox/Profiles/f9rkhimy.default-release"
+    jenkins_url = "https://jenkins.shub.us/job/mobile/job/Android/job/Beep_Phase_Release_Automation/configure"
     increases = [1, 2, 5, 10, 20, 50, 100]
     stage_over = False
 
     auto = Automation(phase_url, auto_run, terminate, auto_status, driver_path, login_cookie, jenkins_url)
 
     recipient = auto.getApolloConfig()
-    today_work, tomorrow_work = auto.dateJudgement()
+    #today_work, tomorrow_work = auto.dateJudgement()
 
     release_name, current_stage = auto.getPhaseStatus()
     print("Release Name={}\nCurrent Stage={}%".format(release_name, current_stage))
@@ -61,18 +61,14 @@ if __name__ == '__main__':
 
                 action = "Auto-run mode stopped, because of manual termination."
                 text = auto.text(action, release_name, current_stage, phase_url)
-            elif terminate == "false" and today_work:
-                if not tomorrow_work and current_stage == "50":
-                    action = "Today is last workday, not updating to 100%."
-                    text = auto.text(action, release_name, current_stage, phase_url)
-                else:
-                    stage_over = auto.changePhase(new_stage)
-                    action = "Increase phase stage."
+            elif terminate == "false":
+                stage_over = auto.changePhase(new_stage)
+                action = "Increase phase stage."
 
-                    if stage_over:
-                        auto.changeJenkins(stage_over)
-                        action = "Phase stage was upgraded to 100% today. Stoppend jenkins autoRun."
-                    text = auto.text(action, release_name, new_stage, phase_url)
+                if stage_over:
+                    auto.changeJenkins(stage_over)
+                    action = "Phase stage was upgraded to 100% today. Stoppend jenkins autoRun."
+                text = auto.text(action, release_name, new_stage, phase_url)
         else:
             print(">>> Your operation is not legal and the current Jenkins job status is :{}. Unable to complete the (terminate={},auto_run={}) operation.".format(auto_status, terminate, auto_run))
 
@@ -81,5 +77,6 @@ if __name__ == '__main__':
 
     auto.driver.quit()
     auto.send_message(recipient, text)
+
 
 

@@ -74,12 +74,12 @@ class Automation(object):
         self.driver.get(self.url)
 
         try:
-            self.wait.until(ec.presence_of_element_located(('xpath', '//fire-feature-bar-title/h2')))
+            self.wait.until(ec.presence_of_element_located(('xpath', '//fire-feature-bar-title/h1')))
             time.sleep(2)
 
             release_name = ""
             while release_name == "":
-                release_name = self.driver.find_element("xpath", '//fire-feature-bar-title/h2').text
+                release_name = self.driver.find_element("xpath", '//fire-feature-bar-title/h1').text
                 release_name = release_name.replace(" ", "")
                 time.sleep(2)
 
@@ -96,7 +96,7 @@ class Automation(object):
 
             release_name = ""
             while release_name == "":
-                release_name = self.driver.find_element("xpath", '//fire-feature-bar-title/h2').text
+                release_name = self.driver.find_element("xpath", '//fire-feature-bar-title/h1').text
                 release_name = release_name.replace(" ", "")
                 time.sleep(2)
 
@@ -395,9 +395,17 @@ if __name__ == '__main__':
                     auto.send_message(text)
         elif auto_status == "Stopped": # manual run once
             if int(distribution) == 100:
+                try:
+                    auto.firebaseAutoClose()
+                    print("\n>>> Phease release closed success!")
+                    note = "Phease release closed success!"
+                except:
+                    print("\n>>> Phease release closed failed!")
+                    note = "Phease release closed failed!"
+
                 auto.driver.quit()
 
-                action = 'Already updated to 100% before. Manual execution failed.'
+                action = 'Already updated to 100% before. {}'.format(note)
                 text = auto.text(action, release_name, distribution, auto.url)
 
                 print(text)
