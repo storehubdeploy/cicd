@@ -171,6 +171,15 @@ class Automation(object):
 
         self.driver.find_element('css selector', 'button.mat-raised-button:nth-child(2)').click()
 
+        time.sleep(2)
+        try:
+            # Close boot window.
+            boot_window = self.driver.find_element('xpath', '//button[@class="mat-focus-indicator mat-button mat-button-base"]/span[text()=" Cancel "]')
+            boot_window.click()
+            print(">>> Close the boot window.")
+        except:
+            self.wait.until(ec.presence_of_element_located(('css selector', '.publish')))
+
         # get all changes
         for i in range(len(table_list)):
             key = table_list[i][0]
