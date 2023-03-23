@@ -117,7 +117,41 @@ def call(String type,Map map) {
                             }
                         }
                     }
-                }
+                } 
+//                stage('Deploy Service To Test23') {
+//                    options {
+//                        timeout(time: 1, unit: 'HOURS')  // timeout on this stage
+//                    }
+//                    steps {
+//                        script{
+//                            def jobBuild = build job: "02-test/test23/web-backoffice-v2-webapp-test23", parameters: [gitParameter(name: 'branch', value: "${env.issue}"), booleanParam(name: 'disallowIncomplete', value: false), string(name: 'snapshotType', value: 'formal')], propagate: false
+//                            def jobResult = jobBuild.getResult()
+//                            def jobURL = jobBuild.absoluteUrl
+//                            echo "Build app result: ${jobResult}:${jobURL}"
+//        
+//                            if (jobResult != 'SUCCESS') {
+//                                status='"Deploy Failed"'
+//                                send_message(status,"null","null","null",time_start)
+//                                sh 'exit 1'
+//                            }
+//                        }
+//                    }
+//                }
+//                stage('UI Test') {
+//                    steps {
+//                        script {
+//                            def jobBuild = build job: '00-QA/qa_automation_UI-test-web', parameters: [gitParameter(name: 'branch', value: "${env.qaui_branch}"), string(name: 'actiontags', value: "${env.qaui_action}")], propagate: false
+//                            def jobResult = jobBuild.getResult()
+//                            echo "Build of 'qaui_test' result: ${jobResult}"
+//        
+//                            if (jobResult != 'SUCCESS') {
+//                                status='"UI Test Failed"'
+//                                send_message(status,"null","null","null",time_start)
+//                                sh 'exit 1'
+//                            }
+//                        }
+//                    }
+//                }
             }
 
             post {
