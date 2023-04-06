@@ -394,13 +394,13 @@ def call(String type,Map map) {
                 success {
                     echo "success"
                     send_message('success',s3,versionCode,versionNum,time_start)
-//            sh "python3.6 /data/tools/jira_issue.py success ${env.issue} ${env.repo} ${env.GIT_BRANCH} ${env.GIT_COMMIT} ${env.pgy_url} ${env.report_url} ${env.JOB_NAME} ${env.BUILD_NUMBER} ${env.BUILD_URL} ${env.channel_default} ${env.channel}"
-                    sh "python3.6 /data/tools/change_jira.py ${env.issue}  'CI pipeline success' 'Ready_For_Test'"
+//                    sh "python3.6 /data/tools/jira_issue.py success ${env.issue} ${env.repo} ${env.GIT_BRANCH} ${env.GIT_COMMIT} ${env.pgy_url} ${env.report_url} ${env.JOB_NAME} ${env.BUILD_NUMBER} ${env.BUILD_URL} ${env.channel_default} ${env.channel}"
+//                    sh "python3.6 /data/tools/change_jira.py ${env.issue}  'CI pipeline success' 'Ready_For_Test'"
                 }
                 failure {
                     echo "failed"
-//            sh "python3.6 /data/tools/jira_issue.py failed ${env.issue} ${env.repo} ${env.GIT_BRANCH} ${env.GIT_COMMIT} ${env.pgy_url} ${env.report_url} ${env.JOB_NAME} ${env.BUILD_NUMBER} ${env.BUILD_URL} ${env.channel_default} ${env.channel}"
-                    sh "python3.6 /data/tools/change_jira.py ${env.issue}  'CI pipeline failed' 'Not_ready'"
+//                    sh "python3.6 /data/tools/jira_issue.py failed ${env.issue} ${env.repo} ${env.GIT_BRANCH} ${env.GIT_COMMIT} ${env.pgy_url} ${env.report_url} ${env.JOB_NAME} ${env.BUILD_NUMBER} ${env.BUILD_URL} ${env.channel_default} ${env.channel}"
+//                    sh "python3.6 /data/tools/change_jira.py ${env.issue}  'CI pipeline failed' 'Not_ready'"
                 }
             }
         }
