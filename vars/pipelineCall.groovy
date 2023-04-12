@@ -32,7 +32,7 @@ def configMap(env,appId,namespace,cluster){
 }
 
 def call(Map map) {
-    def props = configMap(map.ENV,map.APPID,map.NAMESPACE,map.CLUSTER)
+    def props = configMap(map.env,map.appid,map.namespace,map.cluster)
 
     if (props.PROJECT == "rnpos") {
         timestamps {
