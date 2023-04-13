@@ -115,7 +115,8 @@ class Automation(object):
 
     def firebaseAuto(self):
         time.sleep(1)
-        self.driver.find_element('css selector', 'button.mat-menu-trigger:nth-child(1)').click()
+        self.driver.find_element('css selector', '.more-actions').click()
+        time.sleep(1)
         self.driver.find_element('css selector', '.increase-distribution-button').click()
 
         prenu = self.driver.find_element('css selector', 'input.ng-pristine').get_attribute('value')
