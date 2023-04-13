@@ -309,31 +309,31 @@ def call(String type,Map map) {
 //                }
 //            }
 //        }
-//                 stage('trigger test deploy') {
-//                     options {
-//                         timeout(time: 1, unit: 'HOURS')  // timeout on this stage
-//                     }
-//                     steps {
-//                         script{
-//                             if (action == "android_qaui_action") {
-//                                 jenkins_job='mobile/Android/apk-rnpos-fat-node12.22.7'
-//                             } else {
-//                                 jenkins_job='mobile/iOS/ios-rnpos-fat'
-//                             }
+                stage('trigger test deploy') {
+                    options {
+                        timeout(time: 1, unit: 'HOURS')  // timeout on this stage
+                    }
+                    steps {
+                        script{
+                            if (action == "android_qaui_action") {
+                                jenkins_job='mobile/Android/apk-rnpos-fat-node12.22.7'
+                            } else {
+                                jenkins_job='mobile/iOS/ios-rnpos-fat'
+                            }
 
-//                             def jobBuild = build job: "${jenkins_job}", parameters: [gitParameter(name: 'branch', value: "${env.issue}")], propagate: false
-//                             def jobResult = jobBuild.getResult()
-//                             echo "Build app result: ${jobResult}"
+                            def jobBuild = build job: "${jenkins_job}", parameters: [gitParameter(name: 'branch', value: "${env.issue}")], propagate: false
+                            def jobResult = jobBuild.getResult()
+                            echo "Build app result: ${jobResult}"
 
-//                             if (jobResult != 'SUCCESS') {
-//                                 status='"Packaging failed"'
-//                                 send_message(status,"null","null","null",time_start)
-//                                 sh 'exit 1'
-//                             }
-//                             (s3,versionCode,versionNum)=get_s3()
-//                         }
-//                     }
-//                 }
+                            if (jobResult != 'SUCCESS') {
+                                status='"Packaging failed"'
+                                send_message(status,"null","null","null",time_start)
+                                sh 'exit 1'
+                            }
+                            (s3,versionCode,versionNum)=get_s3()
+                        }
+                    }
+                }
 //                 stage('trigger qaapi_test') {
 //                     steps {
 //                         script {
