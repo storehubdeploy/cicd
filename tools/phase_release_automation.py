@@ -140,9 +140,9 @@ class Automation(object):
     def firebaseAutoClose(self):
         time.sleep(1)
         print("\n>>> Closing phase release...\n")
-        self.wait.until(ec.presence_of_element_located(('css selector', 'button.mat-menu-trigger:nth-child(1)')))
+        self.wait.until(ec.presence_of_element_located(('css selector', '.send-button')))
         # click rollout button
-        self.driver.find_element('css selector', 'button.mat-menu-trigger:nth-child(1)').click()
+        self.driver.find_element('css selector', '.send-button').click()
         self.driver.find_element('css selector', '.rollout-button').click()
 
         # change start
@@ -216,15 +216,23 @@ class Automation(object):
         time.sleep(2)
         self.driver.get(self.url)
 
-        self.wait.until(ec.presence_of_element_located(('css selector', 'button.mat-menu-trigger:nth-child(1)')))
-        self.driver.find_element('css selector', 'button.mat-menu-trigger:nth-child(1)').click()
-        time.sleep(1)
+        self.phaseTerminate()
+
+
+    def phaseTerminate(self):
+        self.wait.until(ec.presence_of_element_located(('css selector', '.more-actions')))
+
+        self.driver.find_element('css selector', '.more-actions').click()
+        time.sleep(2)
         self.driver.find_element('css selector', '.stop-button').click()
 
-        self.wait.until(ec.presence_of_element_located(('css selector', 'button.mat-raised-button:nth-child(2) > span:nth-child(1)')))
-        self.driver.find_element('css selector', 'button.mat-raised-button:nth-child(2) > span:nth-child(1)').click()
-        time.sleep(2)
+        self.wait.until(ec.presence_of_element_located(('css selector', 'button.mat-raised-button:nth-child(2)')))
 
+        # Save Stop
+        time.sleep(1)
+        self.driver.find_element('css selector', 'button.mat-raised-button:nth-child(2)').click()
+
+        time.sleep(2)
 
 
     def jenkinsAuto(self):
@@ -358,6 +366,8 @@ if __name__ == '__main__':
             auto.send_message(text)
 
     elif terminate == "true" and auto_status == "Running":
+        auto.phaseTerminate()
+
         auto.jenkinsAuto()  # main
         auto.driver.quit()
 
