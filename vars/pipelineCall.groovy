@@ -334,53 +334,53 @@ def call(String type,Map map) {
                         }
                     }
                 }
-//                 stage('trigger qaapi_test') {
-//                     steps {
-//                         script {
-//                             def jobBuild = build job: '00-QA/qa_automation_API-test', parameters: [gitParameter(name: 'branch', value: 'master'), string(name: 'action', value: "${env.qaapi_action}")], propagate: false
-//                             def jobResult = jobBuild.getResult()
-//                             echo "Build of 'qaapi_test' result: ${jobResult}"
+                stage('trigger qaapi_test') {
+                    steps {
+                        script {
+                            def jobBuild = build job: '00-QA/qa_automation_API-test', parameters: [gitParameter(name: 'branch', value: 'master'), string(name: 'action', value: "${env.qaapi_action}")], propagate: false
+                            def jobResult = jobBuild.getResult()
+                            echo "Build of 'qaapi_test' result: ${jobResult}"
 
-//                             if (jobResult != 'SUCCESS') {
-//                                 status='"API test failed"'
-//                                 send_message(status,s3,versionCode,versionNum,time_start)
-//                                 sh 'exit 1'
-//                             }
-//                         }
-//                     }
-//                 }
-                // stage('trigger qaui_test') {
-                //     steps {
-                //         script {
-                //             qaui_action = """${sh(
-                //                     returnStdout: true,
-                //                     script: "/data/ops/ci/libs/get_config_return.py rnpos-pipeline fat ${action} ${repo} ${pr_branch}"
-                //             ).trim()}"""
+                            if (jobResult != 'SUCCESS') {
+                                status='"API test failed"'
+                                send_message(status,s3,versionCode,versionNum,time_start)
+                                sh 'exit 1'
+                            }
+                        }
+                    }
+                }
+                stage('trigger qaui_test') {
+                    steps {
+                        script {
+                            qaui_action = """${sh(
+                                    returnStdout: true,
+                                    script: "/data/ops/ci/libs/get_config_return.py rnpos-pipeline fat ${action} ${repo} ${pr_branch}"
+                            ).trim()}"""
 
-                //             if (action == "android_qaui_action") {
-                //                 uitest_branch="""${sh(
-                //                         returnStdout: true,
-                //                         script: "/data/ops/ci/libs/get_config_return.py rnpos-pipeline fat android_uitest_branch ${repo} ${pr_branch}"
-                //                 ).trim()}"""
-                //             } else {
-                //                 uitest_branch="""${sh(
-                //                         returnStdout: true,
-                //                         script: "/data/ops/ci/libs/get_config_return.py rnpos-pipeline fat ios_uitest_branch ${repo} ${pr_branch}"
-                //                 ).trim()}"""
-                //             }
+                            if (action == "android_qaui_action") {
+                                uitest_branch="""${sh(
+                                        returnStdout: true,
+                                        script: "/data/ops/ci/libs/get_config_return.py rnpos-pipeline fat android_uitest_branch ${repo} ${pr_branch}"
+                                ).trim()}"""
+                            } else {
+                                uitest_branch="""${sh(
+                                        returnStdout: true,
+                                        script: "/data/ops/ci/libs/get_config_return.py rnpos-pipeline fat ios_uitest_branch ${repo} ${pr_branch}"
+                                ).trim()}"""
+                            }
 
-                //             def jobBuild = build job: '00-QA/qa_automation_UI-test-mobile', parameters: [gitParameter(name: 'branch', value: "${uitest_branch}"), string(name: 'actiontags', value: "${qaui_action}")], propagate: false
-                //             def jobResult = jobBuild.getResult()
-                //             echo "Build of 'qaui_test' result: ${jobResult}"
+                            def jobBuild = build job: '00-QA/qa_automation_UI-test-mobile', parameters: [gitParameter(name: 'branch', value: "${uitest_branch}"), string(name: 'actiontags', value: "${qaui_action}")], propagate: false
+                            def jobResult = jobBuild.getResult()
+                            echo "Build of 'qaui_test' result: ${jobResult}"
 
-                //             if (jobResult != 'SUCCESS') {
-                //                 status='"UI test failed"'
-                //                 send_message(status,s3,versionCode,versionNum,time_start)
-                //                 sh 'exit 1'
-                //             }
-                //         }
-                //     }
-                // }
+                            if (jobResult != 'SUCCESS') {
+                                status='"UI test failed"'
+                                send_message(status,s3,versionCode,versionNum,time_start)
+                                sh 'exit 1'
+                            }
+                        }
+                    }
+                }
             }
 
             post {
