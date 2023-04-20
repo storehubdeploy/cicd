@@ -140,9 +140,9 @@ class Automation(object):
     def firebaseAutoClose(self):
         time.sleep(1)
         print("\n>>> Closing phase release...\n")
-        self.wait.until(ec.presence_of_element_located(('css selector', '.send-button')))
+        self.wait.until(ec.presence_of_element_located(('css selector', '.more-actions')))
         # click rollout button
-        self.driver.find_element('css selector', '.send-button').click()
+        self.driver.find_element('css selector', '.more-actions').click()
         self.driver.find_element('css selector', '.rollout-button').click()
 
         # change start
