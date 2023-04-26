@@ -32,13 +32,13 @@ def configMap(env,appId,namespace,cluster){
 }
 
 def call(Map map) {
-//     def props = configMap(map.env,map.appid,map.namespace,map.cluster)
+    def props = configMap(map.env,map.appid,map.namespace,map.cluster)
 
     if (props.PROJECT == "rnpos") {
         timestamps {
             node('master'){
                 sh "env"
-                sh "exit 1"
+                
                 buildSteps = props.STEPS.replaceAll(/^\"|\"$/,'').split(',')
                 echo "-- These steps will be run: $buildSteps"
 
