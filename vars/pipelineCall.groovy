@@ -32,6 +32,7 @@ def configMap(env,appId,namespace,cluster){
 }
 
 def call(Map map) {
+    sh "env"
     def props = configMap(map.env,map.appid,map.namespace,map.cluster)
 
     if (props.PROJECT == "rnpos") {
