@@ -352,6 +352,7 @@ def call(String type,Map map) {
                 stage('trigger qaui_test') {
                     steps {
                         script {
+                            echo "${env.CHANGE_BRANCH}"
                             if (env.CHANGE_BRANCH == 'release') {
                                 qaui_action = """${sh(
                                         returnStdout: true,
