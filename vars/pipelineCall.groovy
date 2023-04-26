@@ -352,7 +352,7 @@ def call(String type,Map map) {
                 stage('trigger qaui_test') {
                     steps {
                         script {
-                            if (env.$CHANGE_BRANCH == 'release') {
+                            if (env.CHANGE_BRANCH == 'release') {
                                 qaui_action = """${sh(
                                         returnStdout: true,
                                         script: "/data/ops/ci/libs/get_config_return.py rnpos-pipeline fat ${action} ${repo} ${pr_branch}"
