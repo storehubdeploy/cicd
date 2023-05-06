@@ -6,6 +6,7 @@ def initial(props){
 // ===================================steps==============================================
 def beforeBuild(){
     node(myProps.BUILD_SERVER){
+        sh 'node -v'
         start_time = getTime()
         checkBranch()
 
