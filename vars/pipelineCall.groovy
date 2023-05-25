@@ -277,7 +277,7 @@ def call(String type,Map map) {
                             nodejs('v12.22.7') {
                                 script {
                                     try {
-                                        sh 'yarn run test:coverage'
+                                        sh 'yarn run test'
                                     }
                                     catch (exc) {
                                         status='"Unit Test run failed"'
