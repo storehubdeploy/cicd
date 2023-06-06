@@ -223,6 +223,10 @@ def call(String type,Map map) {
                 site = 'storehub.atlassian.net'
                 pr_branch = "${env.GIT_BRANCH}"
                 PR_LINK = "https://github.com/${env.repo}/pull/${env.CHANGE_ID}"
+                jira_status = """${sh(
+                        returnStdout: true,
+                        script: "python3.6 /data/tools/get_jira_status.py ${env.CHANGE_BRANCH}"
+                ).trim()}"""
                 issue = """${sh(
                         returnStdout: true,
                         script: "python3.6 /data/tools/get_issue.py ${repo} ${pr_branch}"
@@ -315,36 +319,44 @@ def call(String type,Map map) {
                     }
                     steps {
                         script{
-                            if (action == "android_qaui_action") {
-                                jenkins_job='mobile/Android/apk-rnpos-fat-node12.22.7'
+                            if (env.jira_status == 'Ready For Release' || env.jira_status == 'Done'){
+                                ehco ">>> Skip."
                             } else {
-                                jenkins_job='mobile/iOS/ios-rnpos-fat'
-                            }
+                                if (action == "android_qaui_action") {
+                                    jenkins_job='mobile/Android/apk-rnpos-fat-node12.22.7'
+                                } else {
+                                    jenkins_job='mobile/iOS/ios-rnpos-fat'
+                                }
 
-                            def jobBuild = build job: "${jenkins_job}", parameters: [gitParameter(name: 'branch', value: "${env.issue}")], propagate: false
-                            def jobResult = jobBuild.getResult()
-                            echo "Build app result: ${jobResult}"
+                                def jobBuild = build job: "${jenkins_job}", parameters: [gitParameter(name: 'branch', value: "${env.issue}")], propagate: false
+                                def jobResult = jobBuild.getResult()
+                                echo "Build app result: ${jobResult}"
 
-                            if (jobResult != 'SUCCESS') {
-                                status='"Packaging failed"'
-                                send_message(status,"null","null","null",time_start)
-                                sh 'exit 1'
+                                if (jobResult != 'SUCCESS') {
+                                    status='"Packaging failed"'
+                                    send_message(status,"null","null","null",time_start)
+                                    sh 'exit 1'
+                                }
+                                (s3,versionCode,versionNum)=get_s3()
                             }
-                            (s3,versionCode,versionNum)=get_s3()
                         }
                     }
                 }
                 stage('trigger qaapi_test') {
                     steps {
                         script {
-                            def jobBuild = build job: '00-QA/qa_automation_API-test', parameters: [gitParameter(name: 'branch', value: 'master'), string(name: 'action', value: "${env.qaapi_action}")], propagate: false
-                            def jobResult = jobBuild.getResult()
-                            echo "Build of 'qaapi_test' result: ${jobResult}"
+                            if (env.jira_status == 'Ready For Release' || env.jira_status == 'Done'){
+                                ehco ">>> Skip."
+                            } else {
+                                def jobBuild = build job: '00-QA/qa_automation_API-test', parameters: [gitParameter(name: 'branch', value: 'master'), string(name: 'action', value: "${env.qaapi_action}")], propagate: false
+                                def jobResult = jobBuild.getResult()
+                                echo "Build of 'qaapi_test' result: ${jobResult}"
 
-                            if (jobResult != 'SUCCESS') {
-                                status='"API test failed"'
-                                send_message(status,s3,versionCode,versionNum,time_start)
-                                sh 'exit 1'
+                                if (jobResult != 'SUCCESS') {
+                                    status='"API test failed"'
+                                    send_message(status,s3,versionCode,versionNum,time_start)
+                                    sh 'exit 1'
+                                }
                             }
                         }
                     }
@@ -352,33 +364,40 @@ def call(String type,Map map) {
                 stage('trigger qaui_test') {
                     steps {
                         script {
-                            echo "${env.CHANGE_BRANCH}"
-                            if (env.CHANGE_BRANCH == 'release') {
-                                qaui_action = """${sh(
-                                        returnStdout: true,
-                                        script: "/data/ops/ci/libs/get_config_return.py rnpos-pipeline fat ${action} ${repo} ${pr_branch}"
-                                ).trim()}"""
-
-                                if (action == "android_qaui_action") {
-                                    uitest_branch="""${sh(
+                            if (env.jira_status == 'Ready For Release' || env.jira_status == 'Done'){
+                                ehco ">>> Skip."
+                                s3 = "skip build and QA test"
+                                versionCode = 0
+                                versionNum = 0
+                            } else {
+                                echo "${env.CHANGE_BRANCH}"
+                                if (env.CHANGE_BRANCH == 'release') {
+                                    qaui_action = """${sh(
                                             returnStdout: true,
-                                            script: "/data/ops/ci/libs/get_config_return.py rnpos-pipeline fat android_uitest_branch ${repo} ${pr_branch}"
+                                            script: "/data/ops/ci/libs/get_config_return.py rnpos-pipeline fat ${action} ${repo} ${pr_branch}"
                                     ).trim()}"""
-                                } else {
-                                    uitest_branch="""${sh(
-                                            returnStdout: true,
-                                            script: "/data/ops/ci/libs/get_config_return.py rnpos-pipeline fat ios_uitest_branch ${repo} ${pr_branch}"
-                                    ).trim()}"""
-                                }
 
-                                def jobBuild = build job: '00-QA/qa_automation_UI-test-mobile', parameters: [gitParameter(name: 'branch', value: "${uitest_branch}"), string(name: 'actiontags', value: "${qaui_action}")], propagate: false
-                                def jobResult = jobBuild.getResult()
-                                echo "Build of 'qaui_test' result: ${jobResult}"
+                                    if (action == "android_qaui_action") {
+                                        uitest_branch="""${sh(
+                                                returnStdout: true,
+                                                script: "/data/ops/ci/libs/get_config_return.py rnpos-pipeline fat android_uitest_branch ${repo} ${pr_branch}"
+                                        ).trim()}"""
+                                    } else {
+                                        uitest_branch="""${sh(
+                                                returnStdout: true,
+                                                script: "/data/ops/ci/libs/get_config_return.py rnpos-pipeline fat ios_uitest_branch ${repo} ${pr_branch}"
+                                        ).trim()}"""
+                                    }
 
-                                if (jobResult != 'SUCCESS') {
-                                    status='"UI test failed"'
-                                    send_message(status,s3,versionCode,versionNum,time_start)
-                                    sh 'exit 1'
+                                    def jobBuild = build job: '00-QA/qa_automation_UI-test-mobile', parameters: [gitParameter(name: 'branch', value: "${uitest_branch}"), string(name: 'actiontags', value: "${qaui_action}")], propagate: false
+                                    def jobResult = jobBuild.getResult()
+                                    echo "Build of 'qaui_test' result: ${jobResult}"
+
+                                    if (jobResult != 'SUCCESS') {
+                                        status='"UI test failed"'
+                                        send_message(status,s3,versionCode,versionNum,time_start)
+                                        sh 'exit 1'
+                                    }
                                 }
                             }
                         }
