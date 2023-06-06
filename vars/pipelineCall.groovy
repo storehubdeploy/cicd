@@ -320,7 +320,7 @@ def call(String type,Map map) {
                     steps {
                         script{
                             if (env.jira_status == 'Ready For Release' || env.jira_status == 'Done'){
-                                ehco ">>> Skip."
+                                echo ">>> Skip."
                             } else {
                                 if (action == "android_qaui_action") {
                                     jenkins_job='mobile/Android/apk-rnpos-fat-node12.22.7'
@@ -346,7 +346,7 @@ def call(String type,Map map) {
                     steps {
                         script {
                             if (env.jira_status == 'Ready For Release' || env.jira_status == 'Done'){
-                                ehco ">>> Skip."
+                                echo ">>> Skip."
                             } else {
                                 def jobBuild = build job: '00-QA/qa_automation_API-test', parameters: [gitParameter(name: 'branch', value: 'master'), string(name: 'action', value: "${env.qaapi_action}")], propagate: false
                                 def jobResult = jobBuild.getResult()
@@ -365,7 +365,7 @@ def call(String type,Map map) {
                     steps {
                         script {
                             if (env.jira_status == 'Ready For Release' || env.jira_status == 'Done'){
-                                ehco ">>> Skip."
+                                echo ">>> Skip."
                                 s3 = "skip build and QA test"
                                 versionCode = 0
                                 versionNum = 0
