@@ -319,7 +319,7 @@ def call(String type,Map map) {
                     }
                     steps {
                         script{
-                            if (env.jira_status == 'Ready For Release' || env.jira_status == 'Done'){
+                            if (env.jira_status == 'Ready for Release' || env.jira_status == 'Done'){
                                 echo ">>> Skip."
                             } else {
                                 if (action == "android_qaui_action") {
@@ -345,7 +345,7 @@ def call(String type,Map map) {
                 stage('trigger qaapi_test') {
                     steps {
                         script {
-                            if (env.jira_status == 'Ready For Release' || env.jira_status == 'Done'){
+                            if (env.jira_status == 'Ready for Release' || env.jira_status == 'Done'){
                                 echo ">>> Skip."
                             } else {
                                 def jobBuild = build job: '00-QA/qa_automation_API-test', parameters: [gitParameter(name: 'branch', value: 'master'), string(name: 'action', value: "${env.qaapi_action}")], propagate: false
@@ -364,7 +364,7 @@ def call(String type,Map map) {
                 stage('trigger qaui_test') {
                     steps {
                         script {
-                            if (env.jira_status == 'Ready For Release' || env.jira_status == 'Done'){
+                            if (env.jira_status == 'Ready for Release' || env.jira_status == 'Done'){
                                 echo ">>> Skip."
                                 s3 = "skip build and QA test"
                                 versionCode = 0
