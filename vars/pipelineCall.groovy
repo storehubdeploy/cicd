@@ -261,7 +261,7 @@ def call(String type,Map map) {
                                     try{
                                         time_start=getTime()
                                         sh 'yarn install'
-                                        sh 'yarn run compile'
+//                                         sh 'yarn run compile'
                                         sh 'echo "sonar.branch.name=$GIT_BRANCH" >> sonar-project.properties'
                                         sh 'echo "sonar.projectVersion=$(date +"%y.%m")" >> sonar-project.properties'
                                     }
