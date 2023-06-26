@@ -214,7 +214,7 @@ def call(String type,Map map) {
         pipeline {
             agent {
                 // label 'master'
-                label 'slave-01'
+                label 'slave-03'
             }
 
             options {
