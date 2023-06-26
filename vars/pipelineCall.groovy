@@ -24,11 +24,13 @@ def send_message(status,s3,versionCode,versionNum,time_start){
 
 def String get_s3(){
     if (action == "android_qaui_action") {
-        def dataObject = readJSON file: '/data/share/android__package/apk-rnpos-fat/output-metadata.json'
-
-        s3=dataObject.S3_URL
-        versionCode=dataObject.elements[0].versionCode
-        versionNum=dataObject.elements[0].versionName
+        node("master") {
+            def dataObject = readJSON file: '/data/share/android__package/apk-rnpos-fat/output-metadata.json'
+    
+            s3=dataObject.S3_URL
+            versionCode=dataObject.elements[0].versionCode
+            versionNum=dataObject.elements[0].versionName
+        }
     }else {
         s3="https://fat-rnpos-ipa.s3-ap-southeast-1.amazonaws.com/rnpos-test.ipa"
         versionCode="null"
@@ -209,7 +211,8 @@ def call(String type,Map map) {
     } else if (type == "rnpos") {
         pipeline {
             agent {
-                label 'master'
+                // label 'master'
+                label 'slave-03'
             }
 
             options {
