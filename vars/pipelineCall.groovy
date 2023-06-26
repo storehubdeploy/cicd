@@ -42,21 +42,23 @@ def String get_s3(){
 
 
 def String build_info(){
-    int num=readFile file: '/data/share/android__package/apk-rnpos-fat/build_nu.txt'
-    echo "${num}"
-    num=num+1
-    echo "${num}"
-    writeFile file: '/data/share/android__package/apk-rnpos-fat/build_nu.txt', text: "${num}"
-
-    choose=num % 2
-
-    if(choose == 1){
-        action="ios_qaui_action"
-    } else {
-        action="android_qaui_action"
+    node("master") {
+        int num=readFile file: '/data/share/android__package/apk-rnpos-fat/build_nu.txt'
+        echo "${num}"
+        num=num+1
+        echo "${num}"
+        writeFile file: '/data/share/android__package/apk-rnpos-fat/build_nu.txt', text: "${num}"
+    
+        choose=num % 2
+    
+        if(choose == 1){
+            action="ios_qaui_action"
+        } else {
+            action="android_qaui_action"
+        }
+    
+        return action
     }
-
-    return action
 }
 
 
