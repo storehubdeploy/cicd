@@ -111,7 +111,7 @@ def call(String type,Map map) {
             stages {
                 stage('Prepare env') {
                     steps {
-                        nodejs('v12.22.7') {
+                        nodejs('v16.20.0') {
                             script {
                                 try{
                                     time_start=getTime()
@@ -128,7 +128,7 @@ def call(String type,Map map) {
                 }
                 stage('Static Code Detection') {
                     steps {
-                        nodejs('v12.22.7') {
+                        nodejs('v16.20.0') {
                             script {
                                 try {
                                     sh 'yarn lint'
@@ -144,7 +144,7 @@ def call(String type,Map map) {
                 }
                 stage('Unit Test') {
                     steps {
-                        nodejs('v12.22.7') {
+                        nodejs('v16.20.0') {
                             script {
                                 try {
                                     sh 'yarn test:coverage'
