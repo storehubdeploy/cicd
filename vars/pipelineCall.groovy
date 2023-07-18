@@ -375,33 +375,31 @@ def call(String type,Map map) {
                                 versionCode = 0
                                 versionNum = 0
                             } else {
-                                if (env.CHANGE_BRANCH == 'Release') {
-                                    qaui_action = """${sh(
+                                qaui_action = """${sh(
+                                        returnStdout: true,
+                                        script: "/data/ops/ci/libs/get_config_return.py rnpos-pipeline fat ${action} ${repo} ${pr_branch}"
+                                ).trim()}"""
+
+                                if (action == "android_qaui_action") {
+                                    uitest_branch="""${sh(
                                             returnStdout: true,
-                                            script: "/data/ops/ci/libs/get_config_return.py rnpos-pipeline fat ${action} ${repo} ${pr_branch}"
+                                            script: "/data/ops/ci/libs/get_config_return.py rnpos-pipeline fat android_uitest_branch ${repo} ${pr_branch}"
                                     ).trim()}"""
-    
-                                    if (action == "android_qaui_action") {
-                                        uitest_branch="""${sh(
-                                                returnStdout: true,
-                                                script: "/data/ops/ci/libs/get_config_return.py rnpos-pipeline fat android_uitest_branch ${repo} ${pr_branch}"
-                                        ).trim()}"""
-                                    } else {
-                                        uitest_branch="""${sh(
-                                                returnStdout: true,
-                                                script: "/data/ops/ci/libs/get_config_return.py rnpos-pipeline fat ios_uitest_branch ${repo} ${pr_branch}"
-                                        ).trim()}"""
-                                    }
-    
-                                    def jobBuild = build job: '00-QA/qa_automation_UI-test-mobile', parameters: [gitParameter(name: 'branch', value: "${uitest_branch}"), string(name: 'actiontags', value: "${qaui_action}")], propagate: false
-                                    def jobResult = jobBuild.getResult()
-                                    echo "Build of 'qaui_test' result: ${jobResult}"
-    
-                                    if (jobResult != 'SUCCESS') {
-                                        status='"UI test failed"'
-                                        send_message(status,s3,versionCode,versionNum,time_start)
-                                        sh 'exit 1'
-                                    }
+                                } else {
+                                    uitest_branch="""${sh(
+                                            returnStdout: true,
+                                            script: "/data/ops/ci/libs/get_config_return.py rnpos-pipeline fat ios_uitest_branch ${repo} ${pr_branch}"
+                                    ).trim()}"""
+                                }
+
+                                def jobBuild = build job: '00-QA/qa_automation_UI-test-mobile', parameters: [gitParameter(name: 'branch', value: "${uitest_branch}"), string(name: 'actiontags', value: "${qaui_action}")], propagate: false
+                                def jobResult = jobBuild.getResult()
+                                echo "Build of 'qaui_test' result: ${jobResult}"
+
+                                if (jobResult != 'SUCCESS') {
+                                    status='"UI test failed"'
+                                    send_message(status,s3,versionCode,versionNum,time_start)
+                                    sh 'exit 1'
                                 }
                             }
                         }
