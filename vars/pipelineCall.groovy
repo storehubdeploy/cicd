@@ -369,8 +369,8 @@ def call(String type,Map map) {
                 stage('trigger qaui_test') {
                     steps {
                         script {
-                            // if (env.jira_status == 'Ready for Release' || env.jira_status == 'Done'){
-                            if (env.jira_status != ''){
+                            if (env.jira_status == 'Ready for Release' || env.jira_status == 'Done'){
+                            // if (env.jira_status != ''){
                                 echo ">>> Skip."
                                 s3 = "skip build and QA test"
                                 versionCode = 0
@@ -393,7 +393,7 @@ def call(String type,Map map) {
                                     ).trim()}"""
                                 }
 
-                                def jobBuild = build job: '00-QA/qa_automation_UI-test-mobile', parameters: [gitParameter(name: 'branch', value: "${uitest_branch}"), string(name: 'actiontags', value: "${qaui_action}")], propagate: false
+                                def jobBuild = build job: '00-QA/qa_automation_UI-test-web_MY_MacMini', parameters: [gitParameter(name: 'branch', value: "${uitest_branch}"), string(name: 'actiontags', value: "${qaui_action}")], propagate: false
                                 def jobResult = jobBuild.getResult()
                                 echo "Build of 'qaui_test' result: ${jobResult}"
 
