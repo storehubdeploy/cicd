@@ -369,8 +369,8 @@ def call(String type,Map map) {
                 stage('trigger qaui_test') {
                     steps {
                         script {
-                            if (env.jira_status == 'Ready for Release' || env.jira_status == 'Done'){
-                            // if (env.jira_status != ''){
+                            // if (env.jira_status == 'Ready for Release' || env.jira_status == 'Done'){
+                            if (env.jira_status != ''){
                                 echo ">>> Skip."
                                 s3 = "skip build and QA test"
                                 versionCode = 0
