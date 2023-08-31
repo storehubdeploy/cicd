@@ -87,10 +87,7 @@ def generate_yaml(app, env, cluster):
     with open('./{}/values.yaml'.format(app)) as f:
         data = yaml.load(f)
 
-    if cluster == "default":
-        app_name = "{}-{}".format(app, env)
-    else:
-        app_name = "{}-{}-{}".format(app, env, cluster)
+    app_name = app
     name_config = '{0}-config'.format(app_name)
     data['image']['tag'] = git_rev
     data['image']['configMapref'] = name_config
