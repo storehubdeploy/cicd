@@ -261,7 +261,7 @@ def call(String type,Map map) {
                 stage('Prepare env') {
                     steps {
                         dir(path: 'pos-app') {
-                            nodejs('v12.22.7') {
+                            nodejs('v16.20.2') {
                                 script {
                                     try{
                                         time_start=getTime()
@@ -283,7 +283,7 @@ def call(String type,Map map) {
                 stage('Unit Test') {
                     steps {
                         dir(path: 'pos-app') {
-                            nodejs('v12.22.7') {
+                            nodejs('v16.20.2') {
                                 script {
                                     try {
                                         sh 'yarn run test'
