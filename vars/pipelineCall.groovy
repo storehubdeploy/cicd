@@ -328,7 +328,7 @@ def call(String type,Map map) {
                                 echo ">>> Skip."
                             } else {
                                 if (action == "android_qaui_action") {
-                                    jenkins_job='mobile/Android/apk-rnpos-fat-node12.22.7'
+                                    jenkins_job='mobile/Android/apk-rnpos-fat-node16.20.2'
                                 } else {
                                     jenkins_job='mobile/iOS/ios-rnpos-fat'
                                 }
