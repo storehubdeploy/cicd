@@ -330,7 +330,7 @@ def call(String type,Map map) {
                                 if (action == "android_qaui_action") {
                                     jenkins_job='mobile/Android/apk-rnpos-fat-node16.20.2'
                                 } else {
-                                    jenkins_job='mobile/iOS/ios-rnpos-fat'
+                                    jenkins_job='mobile/iOS/ios-rnpos-fat-node16.20.2'
                                 }
 
                                 def jobBuild = build job: "${jenkins_job}", parameters: [gitParameter(name: 'branch', value: "${env.issue}")], propagate: false
