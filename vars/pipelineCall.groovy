@@ -287,9 +287,12 @@ def call(String type,Map map) {
                                 script {
                                     try {
                                         sh 'yarn run test'
+
+                                        echo ">>> Yarn Lint"
+                                        sh 'yarn lint'
                                     }
                                     catch (exc) {
-                                        status='"Unit Test run failed"'
+                                        status='"Static Code Detection failed"'
                                         send_message(status,"null","null","null",time_start)
                                         sh 'exit 1'
                                     }
