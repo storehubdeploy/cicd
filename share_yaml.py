@@ -98,22 +98,30 @@ metadata:
   name: {0}
 data:
 '''.format(name_config)
-    if app.startswith("backoffice-v1-web"):
-        with open("./web.backoffice-v1-web", 'r') as f:
-            for line in f:
-                key = line.split("=")[0]
-                value = '='.join(line.split("=")[1:]).strip()
-    #            if key.startswith('SH') and key.endswith('API_URL'):
-    #                value = "{}-{}-{}".format(1,2,3)
-                content += '  {0}: "{1}"\n'.format(key, value)
+    if env == "fat":
+        if app.startswith("backoffice-v1-web"):
+            with open("./web.backoffice-v1-web", 'r') as f:
+                for line in f:
+                    key = line.split("=")[0]
+                    value = '='.join(line.split("=")[1:]).strip()
+        #            if key.startswith('SH') and key.endswith('API_URL'):
+        #                value = "{}-{}-{}".format(1,2,3)
+                    content += '  {0}: "{1}"\n'.format(key, value)
+        else:
+            with open("./web.{0}".format(app), 'r') as f:
+                for line in f:
+                    key = line.split("=")[0]
+                    value = '='.join(line.split("=")[1:]).strip()
+        #            if key.startswith('SH') and key.endswith('API_URL'):
+        #                value = "{}-{}-{}".format(1,2,3)
+                    content += '  {0}: "{1}"\n'.format(key, value)
     else:
-        with open("./web.{0}".format(app), 'r') as f:
+        with open("./application".format(app), 'r') as f:
             for line in f:
                 key = line.split("=")[0]
                 value = '='.join(line.split("=")[1:]).strip()
-    #            if key.startswith('SH') and key.endswith('API_URL'):
-    #                value = "{}-{}-{}".format(1,2,3)
                 content += '  {0}: "{1}"\n'.format(key, value)
+        
 
     with open('./{}/templates/config.yaml'.format(app), 'w') as f:
         f.write(content)
@@ -156,20 +164,26 @@ data:
         yaml.dump(data_chart, file)
 
 def clean_cache():
-    if app.startswith("backoffice-v1-web"):
-        aname = "web.backoffice-v1-web"
+    if env == "fat":
+        if app.startswith("backoffice-v1-web"):
+            aname = "web.backoffice-v1-web"
+        else:
+            aname = "web.{}".format(app)
     else:
-        aname = "web.{}".format(app)
+        aname = "application"
     for file in [aname, './secret', '.env', '.env.example']:
         if os.path.isfile(file):
             os.remove(file)
 
 
 def get_yaml(app, env, cluster):
-    if app.startswith("backoffice-v1-web"):
-        aname = "web.backoffice-v1-web"
+    if env == "fat":
+        if app.startswith("backoffice-v1-web"):
+            aname = "web.backoffice-v1-web"
+        else:
+            aname = "web.{}".format(app)
     else:
-        aname = "web.{}".format(app)
+        aname = "application"
     namespaces = [aname, 'secret']
     # Get meta Url
     if env in ['fat', 'dev', 'uat', 'pro']:
