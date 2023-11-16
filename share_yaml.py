@@ -29,7 +29,7 @@ def call(cmd, silent=False):
     return CallResult(out, err, result.returncode)
 
 # Global Params
-git_rev = call('git rev-parse --short HEAD').out
+git_rev = call('git rev-parse  HEAD').out[0:8]
 
 def print_color(color, text):
     print("\033[1;{0}m{1}\033[0m".format(color, text))
