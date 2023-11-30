@@ -476,15 +476,17 @@ def call(String type,Map map) {
                 stage('Prepare env') {
                     steps {
                         nodejs('v12.16.1') {
-                            script {
-                                try{
-                                    time_start=getTime()
-                                    sh 'yarn install'
-                                }
-                                catch (exc) {
-                                    status='"Prepare env run failed"'
-                                    send_message(status,"null","null","null", time_start)
-                                    sh 'exit 1'
+                            dir("frontend") {
+                                script {
+                                    try{
+                                        time_start=getTime()
+                                        sh 'yarn install'
+                                    }
+                                    catch (exc) {
+                                        status='"Prepare env run failed"'
+                                        send_message(status,"null","null","null", time_start)
+                                        sh 'exit 1'
+                                    }
                                 }
                             }
                         }
@@ -493,14 +495,16 @@ def call(String type,Map map) {
                 stage('Static Code Detection') {
                     steps {
                         nodejs('v12.16.1') {
-                            script {
-                                try {
-                                    sh 'yarn lint'
-                                }
-                                catch (exc) {
-                                    status='"Static Code Detection failed"'
-                                    send_message(status,"null","null","null",time_start)
-                                    sh 'exit 1'
+                            dir("frontend") {
+                                script {
+                                    try {
+                                        sh 'yarn lint'
+                                    }
+                                    catch (exc) {
+                                        status='"Static Code Detection failed"'
+                                        send_message(status,"null","null","null",time_start)
+                                        sh 'exit 1'
+                                    }
                                 }
                             }
                         }
@@ -509,14 +513,16 @@ def call(String type,Map map) {
                 stage('Unit Test') {
                     steps {
                         nodejs('v12.16.1') {
-                            script {
-                                try {
-                                    sh 'yarn test:coverage'
-                                }
-                                catch (exc) {
-                                    status='"Unit Test run failed"'
-                                    send_message(status,"null","null","null",time_start)
-                                    sh 'exit 1'
+                            dir("frontend") {
+                                script {
+                                    try {
+                                        sh 'yarn test:coverage'
+                                    }
+                                    catch (exc) {
+                                        status='"Unit Test run failed"'
+                                        send_message(status,"null","null","null",time_start)
+                                        sh 'exit 1'
+                                    }
                                 }
                             }
                         }
