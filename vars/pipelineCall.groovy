@@ -498,7 +498,7 @@ def call(String type,Map map) {
                             dir("frontend") {
                                 script {
                                     try {
-                                        sh 'yarn lint'
+                                        sh 'yarn eslint'
                                     }
                                     catch (exc) {
                                         status='"Static Code Detection failed"'
