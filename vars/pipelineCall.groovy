@@ -375,7 +375,7 @@ def call(String type,Map map) {
                             // if (env.jira_status == 'Ready for Release' || env.jira_status == 'Done'){
                             if (env.jira_status != ''){
                                 echo ">>> Skip."
-                                s3 = "skip build and QA test"
+                                // s3 = "skip build and QA test"
                                 versionCode = 0
                                 versionNum = 0
                             } else {
