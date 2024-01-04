@@ -280,16 +280,17 @@ def call(String type,Map map) {
                         }
                     }
                 }
-                stage('Unit Test & Yarn Lint') {
+                stage('Yarn Lint & Unit Test') {
                     steps {
                         dir(path: 'pos-app') {
                             nodejs('v16.20.2') {
                                 script {
                                     try {
-                                        sh 'yarn run test'
-
                                         echo ">>> Yarn Lint"
                                         sh 'yarn lint'
+
+                                        echo ">>> UT"
+                                        sh 'yarn run test'                                        
                                     }
                                     catch (exc) {
                                         status='"Unit Test Or Lint run failed"'
