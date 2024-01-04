@@ -280,7 +280,7 @@ def call(String type,Map map) {
                         }
                     }
                 }
-                stage('Unit Test') {
+                stage('Unit Test & Yarn Lint') {
                     steps {
                         dir(path: 'pos-app') {
                             nodejs('v16.20.2') {
