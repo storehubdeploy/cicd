@@ -258,7 +258,7 @@ def call(String type,Map map) {
                 ).trim()}"""
             }
             stages {
-                stage('Prepare env') {
+                stage('Prepare env and yarn compile') {
                     steps {
                         dir(path: 'pos-app') {
                             nodejs('v16.20.2') {
@@ -271,7 +271,7 @@ def call(String type,Map map) {
                                         sh 'echo "sonar.projectVersion=$(date +"%y.%m")" >> sonar-project.properties'
                                     }
                                     catch (exc) {
-                                        status='"Prepare env run failed"'
+                                        status='"Prepare env or yarn compile run failed"'
                                         send_message(status,"null","null","null", time_start)
                                         sh 'exit 1'
                                     }
