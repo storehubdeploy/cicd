@@ -636,6 +636,7 @@ def call(String type,Map map) {
                                 script {
                                     try{
                                         time_start=getTime()
+                                        echo ">>> Yarn Install"
                                         sh 'yarn install'
                                         sh 'echo "sonar.branch.name=$GIT_BRANCH" >> sonar-project.properties'
                                         sh 'echo "sonar.projectVersion=$(date +"%y.%m")" >> sonar-project.properties'
@@ -656,7 +657,9 @@ def call(String type,Map map) {
                             nodejs('v16.20.2') {
                                 script {
                                     try{
+                                        echo ">>> Yarn Compile"
                                         sh 'yarn run compile'
+                                        sh 'exit 1'
                                     }
                                     catch (exc) {
                                         status='"Yarn compile run failed"'
