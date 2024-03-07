@@ -659,7 +659,6 @@ def call(String type,Map map) {
                                     try{
                                         echo ">>> Yarn Compile"
                                         sh 'yarn run compile'
-                                        sh 'exit 1'
                                     }
                                     catch (exc) {
                                         status='"Yarn compile run failed"'
