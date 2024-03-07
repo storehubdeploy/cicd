@@ -210,7 +210,7 @@ def call(String type,Map map) {
                 }
             }
         }
-    } else if (type == "rnpos") {
+    } else if (type == "rnpos-backup") {
         pipeline {
             agent {
                 // label 'master'
@@ -581,7 +581,7 @@ def call(String type,Map map) {
                 }
             }
         }
-    } else if (type == "rnpostest") {
+    } else if (type == "rnpos") {
         pipeline {
             agent {
                 // label 'master'
